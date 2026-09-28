@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { 
   TrendingUp, 
-  TrendingDown, 
   CheckCircle, 
   Clock, 
   FolderKanban, 
   Users, 
   Plus, 
   Search, 
-  ExternalLink, 
-  MoreVertical, 
   Zap, 
-  ArrowUpRight,
-  ShieldCheck,
-  Activity
+  ShieldCheck, 
+  Activity,
+  GitBranch,
+  Terminal
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -31,20 +29,20 @@ export default function Dashboard() {
 
   const [projects, setProjects] = useState([
     {
-      id: 'prj-1',
-      name: 'Vite 6 + React 19 Frontend Overhaul',
-      category: 'Core Web',
+      id: 'NX-101',
+      name: 'Vite 6 + React 19 Frontend Architecture',
+      category: 'Frontend',
       lead: 'Alex Morgan',
       priority: 'Urgent',
       status: 'Active',
       progress: 92,
       dueDate: 'Today',
-      branch: 'feature/v19-core',
+      branch: 'core/v19-framework',
     },
     {
-      id: 'prj-2',
-      name: 'Render Static Edge CI/CD Pipeline',
-      category: 'Cloud DevOps',
+      id: 'NX-102',
+      name: 'Render Static Edge CI/CD Pipeline Action',
+      category: 'DevOps',
       lead: 'Sarah Chen',
       priority: 'High',
       status: 'In Review',
@@ -53,8 +51,8 @@ export default function Dashboard() {
       branch: 'deploy/render-actions',
     },
     {
-      id: 'prj-3',
-      name: 'Zero-Trust Role-Based Auth Gates',
+      id: 'NX-103',
+      name: 'Zero-Trust RBAC & Session Rotation',
       category: 'Security',
       lead: 'Marcus Vance',
       priority: 'High',
@@ -64,32 +62,32 @@ export default function Dashboard() {
       branch: 'auth/jwt-rotation',
     },
     {
-      id: 'prj-4',
-      name: 'Real-time WebSocket Telemetry Visualizer',
+      id: 'NX-104',
+      name: 'Deterministic SVG Performance Charts',
       category: 'Analytics',
       lead: 'Elena Rostova',
       priority: 'Medium',
       status: 'Completed',
       progress: 100,
-      dueDate: 'Completed',
-      branch: 'analytics/socket-stream',
+      dueDate: 'Closed',
+      branch: 'charts/svg-paths',
     },
     {
-      id: 'prj-5',
-      name: 'Design System & Dark Mode Tokens',
+      id: 'NX-105',
+      name: 'High-Contrast 8px Grid Design Tokens',
       category: 'Design Systems',
       lead: 'Alex Morgan',
       priority: 'Medium',
       status: 'Completed',
       progress: 100,
-      dueDate: 'Completed',
-      branch: 'styles/glassmorphic-tokens',
+      dueDate: 'Closed',
+      branch: 'tokens/hairline-grid',
     },
   ]);
 
   const handleAddTask = (newTask) => {
     const projectItem = {
-      id: 'prj-' + (projects.length + 1),
+      id: 'NX-' + (projects.length + 101),
       name: newTask.title,
       category: newTask.category,
       lead: newTask.assignee,
@@ -97,69 +95,49 @@ export default function Dashboard() {
       status: 'Active',
       progress: 20,
       dueDate: newTask.dueDate,
-      branch: 'feature/' + newTask.title.toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 15),
+      branch: 'feat/' + newTask.title.toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 14),
     };
     setProjects([projectItem, ...projects]);
-    showToast(`Task "${newTask.title}" added to active sprint!`, 'success');
+    showToast(`Registered issue ${projectItem.id}: "${newTask.title}"`, 'success');
   };
 
   const handleInvite = (inviteData) => {
-    showToast(`Invitation dispatched to ${inviteData.email} as ${inviteData.role}`, 'success');
+    showToast(`Access invitation dispatched to ${inviteData.email}`, 'success');
   };
 
   const filteredProjects = projects.filter((p) => {
     const matchesFilter = filterStatus === 'All' || p.status === filterStatus;
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          p.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           p.lead.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
-  const getPriorityBadge = (priority) => {
-    switch (priority) {
-      case 'Urgent':
-        return <span className="badge badge-danger">Urgent</span>;
-      case 'High':
-        return <span className="badge badge-warning">High</span>;
-      case 'Medium':
-        return <span className="badge badge-primary">Medium</span>;
-      default:
-        return <span className="badge badge-info">Low</span>;
-    }
-  };
-
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case 'Completed':
-        return <span className="badge badge-success">Completed</span>;
-      case 'In Review':
-        return <span className="badge badge-purple">In Review</span>;
-      default:
-        return <span className="badge badge-info">Active</span>;
-    }
-  };
-
   return (
     <div>
-      {/* Top Banner / Welcome */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+      {/* Top Breadcrumb & Controls */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ fontSize: '1.9rem', marginBottom: '0.3rem' }}>
-            Welcome back, <span className="gradient-text">{user?.name || 'Engineer'}</span> 👋
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
+            <span>WORKSPACE</span>
+            <span>/</span>
+            <span>OVERVIEW</span>
+            <span>/</span>
+            <span style={{ color: 'var(--text-primary)' }}>SPRINT-42</span>
+          </div>
+          <h1 style={{ fontSize: '1.6rem', letterSpacing: '-0.02em' }}>
+            Active Sprint Overview
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
-            Here is your workspace overview for sprint 42. All automated builds are passing.
-          </p>
         </div>
 
-        {/* Action Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <button
             onClick={() => setIsInviteModalOpen(true)}
             className="btn btn-secondary btn-sm"
             id="dash-invite-btn"
           >
-            <Users size={16} />
+            <Users size={14} />
             <span>Invite Team</span>
           </button>
           <button
@@ -167,103 +145,95 @@ export default function Dashboard() {
             className="btn btn-primary btn-sm"
             id="dash-new-task-btn"
           >
-            <Plus size={16} />
-            <span>New Task</span>
+            <Plus size={14} />
+            <span>New Issue</span>
           </button>
         </div>
       </div>
 
-      {/* 4 KPI Stat Cards */}
-      <div className="grid-4" style={{ marginBottom: '2rem' }}>
+      {/* 4 Crisp KPI Stat Cards */}
+      <div className="grid-4" style={{ marginBottom: '24px' }}>
         <div className="stat-card">
           <div className="stat-card-header">
-            <span className="stat-card-title">ACTIVE INITIATIVES</span>
-            <div className="stat-icon" style={{ background: 'var(--primary-light)', color: '#818cf8' }}>
-              <FolderKanban size={18} />
-            </div>
+            <span className="stat-card-title">ACTIVE ISSUES</span>
+            <FolderKanban size={15} color="var(--text-muted)" />
           </div>
           <div className="stat-value">{projects.length}</div>
           <div className="stat-footer">
             <span className="stat-trend up">
-              <TrendingUp size={14} />
+              <TrendingUp size={13} />
               +18.5%
             </span>
-            <span style={{ color: 'var(--text-muted)' }}>vs previous cycle</span>
+            <span style={{ color: 'var(--text-muted)' }}>sprint cadence</span>
           </div>
         </div>
 
         <div className="stat-card">
           <div className="stat-card-header">
             <span className="stat-card-title">SPRINT VELOCITY</span>
-            <div className="stat-icon" style={{ background: 'var(--accent-cyan-light)', color: '#38bdf8' }}>
-              <Zap size={18} />
-            </div>
+            <Zap size={15} color="var(--accent)" />
           </div>
-          <div className="stat-value">94.8 <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-muted)' }}>pts</span></div>
+          <div className="stat-value">94.8 <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>pts</span></div>
           <div className="stat-footer">
             <span className="stat-trend up">
-              <TrendingUp size={14} />
+              <TrendingUp size={13} />
               +12.4%
             </span>
-            <span style={{ color: 'var(--text-muted)' }}>team high record</span>
+            <span style={{ color: 'var(--text-muted)' }}>ahead of curve</span>
           </div>
         </div>
 
         <div className="stat-card">
           <div className="stat-card-header">
-            <span className="stat-card-title">TASK COMPLETION</span>
-            <div className="stat-icon" style={{ background: 'var(--accent-emerald-light)', color: '#34d399' }}>
-              <CheckCircle size={18} />
-            </div>
+            <span className="stat-card-title">COMPLETION RATE</span>
+            <CheckCircle size={15} color="var(--status-success)" />
           </div>
           <div className="stat-value">86.2%</div>
           <div className="stat-footer">
             <span className="stat-trend up">
-              <TrendingUp size={14} />
-              +6.1%
+              <TrendingUp size={13} />
+              24/28
             </span>
-            <span style={{ color: 'var(--text-muted)' }}>24/28 tasks cleared</span>
+            <span style={{ color: 'var(--text-muted)' }}>closed deliverables</span>
           </div>
         </div>
 
         <div className="stat-card">
           <div className="stat-card-header">
-            <span className="stat-card-title">EDGE DEPLOY HEALTH</span>
-            <div className="stat-icon" style={{ background: 'var(--accent-purple-light)', color: '#c084fc' }}>
-              <Activity size={18} />
-            </div>
+            <span className="stat-card-title">P99 EDGE LATENCY</span>
+            <Activity size={15} color="var(--accent)" />
           </div>
-          <div className="stat-value">99.98%</div>
+          <div className="stat-value">14.2 <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>ms</span></div>
           <div className="stat-footer">
-            <span className="stat-trend up">
-              <ShieldCheck size={14} />
-              Render &amp; GH
+            <span style={{ color: 'var(--status-success)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
+              Render CDN
             </span>
-            <span style={{ color: 'var(--text-muted)' }}>14ms p99 latency</span>
+            <span style={{ color: 'var(--text-muted)' }}>28 global POPs</span>
           </div>
         </div>
       </div>
 
-      {/* Main Grid: Projects Table + Live Activity */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2.2fr) minmax(0, 1fr)', gap: '1.75rem', alignItems: 'start' }}>
-        {/* Left Column: Projects Data Table */}
-        <div className="glass-card" style={{ padding: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+      {/* Main Grid: Data Table + Live Activity */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2.3fr) minmax(0, 1fr)', gap: '20px', alignItems: 'start' }}>
+        
+        {/* Left: Deliverables Table */}
+        <div className="panel" style={{ padding: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
             <div>
-              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.2rem' }}>Sprint Work Breakdown</h3>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-                Track deliverables, code branches, and assigned leads.
+              <h3 style={{ fontSize: '1rem', marginBottom: '2px' }}>Sprint Deliverables Matrix</h3>
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                TRACKING REVISION: HEAD -&gt; main (03f1e83)
               </p>
             </div>
 
             {/* Filter Tabs */}
-            <div style={{ display: 'flex', gap: '0.4rem', background: 'var(--bg-secondary)', padding: '0.25rem', borderRadius: 'var(--radius-md)' }}>
+            <div style={{ display: 'flex', gap: '2px', background: 'var(--bg-canvas)', padding: '2px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-default)' }}>
               {['All', 'Active', 'In Review', 'Completed'].map((status) => (
                 <button
                   key={status}
                   onClick={() => setFilterStatus(status)}
-                  className={`btn-sm ${filterStatus === status ? 'btn-primary' : 'btn-ghost'}`}
-                  style={{ borderRadius: 'var(--radius-sm)', fontSize: '0.78rem' }}
+                  className={`btn-sm ${filterStatus === status ? 'btn-secondary' : 'btn-ghost'}`}
+                  style={{ borderRadius: 'var(--radius-xs)', fontSize: '0.75rem', padding: '3px 8px' }}
                 >
                   {status}
                 </button>
@@ -272,25 +242,26 @@ export default function Dashboard() {
           </div>
 
           {/* Search Table Filter */}
-          <div style={{ marginBottom: '1rem', position: 'relative' }}>
-            <Search size={15} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          <div style={{ marginBottom: '12px', position: 'relative' }}>
+            <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input
               type="text"
-              placeholder="Filter tasks by name, category or assignee..."
+              placeholder="Filter by issue key, branch or engineer..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="form-input"
-              style={{ paddingLeft: '2.5rem', fontSize: '0.85rem' }}
+              style={{ paddingLeft: '32px', fontSize: '0.82rem', paddingBlock: '6px' }}
             />
           </div>
 
           {/* Data Table */}
-          <div className="table-container">
-            <table className="custom-table">
+          <div className="table-wrap">
+            <table className="dense-table">
               <thead>
                 <tr>
-                  <th>Task &amp; Branch</th>
-                  <th>Assignee</th>
+                  <th>Key</th>
+                  <th>Deliverable &amp; Branch</th>
+                  <th>Lead</th>
                   <th>Priority</th>
                   <th>Progress</th>
                   <th>Status</th>
@@ -299,35 +270,47 @@ export default function Dashboard() {
               <tbody>
                 {filteredProjects.map((item) => (
                   <tr key={item.id}>
+                    <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+                      {item.id}
+                    </td>
                     <td>
-                      <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.88rem' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.86rem' }}>
                         {item.name}
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                        <span>{item.category}</span>
-                        <span>•</span>
-                        <code style={{ fontSize: '0.72rem', background: 'var(--bg-secondary)', padding: '1px 5px', borderRadius: '3px' }}>{item.branch}</code>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                        <GitBranch size={11} />
+                        <span>{item.branch}</span>
                       </div>
                     </td>
+                    <td style={{ fontSize: '0.82rem' }}>{item.lead}</td>
                     <td>
-                      <span style={{ fontSize: '0.85rem' }}>{item.lead}</span>
+                      <span className={`chip ${
+                        item.priority === 'Urgent' ? 'chip-danger' : item.priority === 'High' ? 'chip-warning' : 'chip-accent'
+                      }`}>
+                        {item.priority}
+                      </span>
                     </td>
-                    <td>{getPriorityBadge(item.priority)}</td>
-                    <td style={{ minWidth: '120px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <div style={{ flex: 1, height: '6px', background: 'var(--bg-tertiary)', borderRadius: '3px', overflow: 'hidden' }}>
+                    <td style={{ minWidth: '100px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <div style={{ flex: 1, height: '4px', background: 'var(--bg-muted)', borderRadius: '2px', overflow: 'hidden' }}>
                           <div
                             style={{
                               width: `${item.progress}%`,
                               height: '100%',
-                              background: item.progress === 100 ? 'var(--accent-emerald)' : 'var(--primary)',
+                              background: item.progress === 100 ? 'var(--status-success)' : 'var(--accent)',
                             }}
                           />
                         </div>
-                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{item.progress}%</span>
+                        <span style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>{item.progress}%</span>
                       </div>
                     </td>
-                    <td>{getStatusBadge(item.status)}</td>
+                    <td>
+                      <span className={`chip ${
+                        item.status === 'Completed' ? 'chip-success' : item.status === 'In Review' ? 'chip-warning' : 'chip-accent'
+                      }`}>
+                        {item.status}
+                      </span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -335,63 +318,52 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Right Column: Real-Time Stream & Cloud Status */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        {/* Right: Real-Time Stream & Cloud Status */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Edge Deployment Card */}
-          <div className="glass-card" style={{ padding: '1.25rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span className="status-dot online"></span>
-                <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>Render Edge CDN</span>
+          <div className="panel" style={{ padding: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div className="indicator-dot online" />
+                <span style={{ fontWeight: 600, fontSize: '0.84rem' }}>Render Edge Environment</span>
               </div>
-              <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>Live Production</span>
+              <span className="chip chip-success">LIVE</span>
             </div>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.5', marginBottom: '0.75rem' }}>
-              Latest release pushed from <code>main</code> branch. Automated GitHub Actions verified.
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: '1.45', marginBottom: '10px' }}>
+              Clean production build verified from <code>main</code> branch.
             </p>
-            <div style={{ background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)', padding: '0.75rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-              <div>Domain: <code>nexusflow-app.onrender.com</code></div>
-              <div style={{ marginTop: '0.25rem' }}>SSL Certificate: Auto-Renewing (Let's Encrypt)</div>
+            <div style={{ background: 'var(--bg-canvas)', borderRadius: 'var(--radius-xs)', padding: '8px 10px', fontSize: '0.74rem', fontFamily: 'var(--font-mono)', border: '1px solid var(--border-default)' }}>
+              <div style={{ color: 'var(--text-muted)' }}>HOST: <code>nexusflow-app.onrender.com</code></div>
+              <div style={{ color: 'var(--text-muted)', marginTop: '2px' }}>ROUTING: <code>SPA Rewrites Enabled (200)</code></div>
             </div>
           </div>
 
-          {/* Activity Timeline */}
-          <div className="glass-card" style={{ padding: '1.25rem' }}>
-            <h4 style={{ fontSize: '0.95rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Clock size={16} color="var(--primary)" />
-              <span>Live Workspace Stream</span>
-            </h4>
+          {/* Activity Log */}
+          <div className="panel" style={{ padding: '16px' }}>
+            <div className="label-caps" style={{ marginBottom: '12px' }}>OPERATIONAL ACTIVITY STREAM</div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.82rem' }}>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary)', marginTop: '5px', flexShrink: 0 }} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontFamily: 'var(--font-mono)', fontSize: '0.76rem' }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>15:32</span>
                 <div>
-                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Alex Morgan</span> merged PR #419 into main
-                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '1px' }}>12 minutes ago</div>
+                  <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>alex.morgan</span> merged PR #419
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>feat: production bundle verification</div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.82rem' }}>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-emerald)', marginTop: '5px', flexShrink: 0 }} />
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>14:50</span>
                 <div>
-                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Sarah Chen</span> closed task "Audit API Latencies"
-                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '1px' }}>45 minutes ago</div>
+                  <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>sarah.chen</span> closed issue NX-102
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>deploy/render-actions passing</div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.82rem' }}>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-cyan)', marginTop: '5px', flexShrink: 0 }} />
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <span style={{ color: 'var(--text-muted)' }}>12:15</span>
                 <div>
-                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Render Bot</span> finished static build in 14.2s
-                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '1px' }}>2 hours ago</div>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.82rem' }}>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-purple)', marginTop: '5px', flexShrink: 0 }} />
-                <div>
-                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Marcus Vance</span> created new branch <code>security/audit</code>
-                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '1px' }}>5 hours ago</div>
+                  <span style={{ color: 'var(--accent)', fontWeight: 600 }}>render-agent</span> finished build
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>exit-code: 0 (duration: 854ms)</div>
                 </div>
               </div>
             </div>
@@ -399,7 +371,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Task & Invite Modals */}
       <TaskModal
         isOpen={isTaskModalOpen}
         onClose={() => setIsTaskModalOpen(false)}

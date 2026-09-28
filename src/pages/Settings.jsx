@@ -9,9 +9,9 @@ import {
   RotateCcw, 
   Check, 
   Copy, 
-  Sparkles,
   Sun,
-  Moon
+  Moon,
+  Terminal
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -24,19 +24,16 @@ export default function Settings() {
 
   const [activeTab, setActiveTab] = useState('profile');
 
-  // Form states initialized with user context
   const [name, setName] = useState(user?.name || 'Alex Morgan');
   const [email, setEmail] = useState(user?.email || 'alex.morgan@nexusflow.io');
   const [role, setRole] = useState(user?.role || 'Staff Product Engineer');
   const [company, setCompany] = useState(user?.company || 'Synthetix AI Labs');
-  const [bio, setBio] = useState(user?.bio || 'Building next-gen digital infrastructure.');
+  const [bio, setBio] = useState(user?.bio || 'Building high-velocity digital infrastructure & telemetry.');
 
-  // Preference states
   const [emailDigest, setEmailDigest] = useState(user?.notifications?.emailDigest ?? true);
   const [taskAlerts, setTaskAlerts] = useState(user?.notifications?.taskAlerts ?? true);
   const [weeklyReport, setWeeklyReport] = useState(user?.notifications?.weeklyReport ?? false);
 
-  // API Key state
   const [apiKey, setApiKey] = useState('nxf_live_9488a7c2e391b4f1790ac38b');
   const [copiedKey, setCopiedKey] = useState(false);
 
@@ -64,20 +61,20 @@ export default function Settings() {
       },
     });
 
-    showToast('Workspace settings saved successfully!', 'success');
+    showToast('Organization settings updated', 'success');
   };
 
   const handleCopyKey = () => {
     navigator.clipboard.writeText(apiKey);
     setCopiedKey(true);
-    showToast('API Key copied to clipboard', 'info');
+    showToast('Copied bearer API token', 'info');
     setTimeout(() => setCopiedKey(false), 2000);
   };
 
   const handleRegenerateKey = () => {
     const newKey = 'nxf_live_' + Array.from({ length: 24 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
     setApiKey(newKey);
-    showToast('Generated fresh API token', 'success');
+    showToast('Rotated API bearer token', 'success');
   };
 
   const handleResetData = () => {
@@ -87,86 +84,89 @@ export default function Settings() {
     setRole(defaultUser.role);
     setCompany(defaultUser.company);
     setBio(defaultUser.bio);
-    showToast('Reset configuration to default demo state', 'info');
+    showToast('Reset configuration to default state', 'info');
   };
 
   return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ fontSize: '1.9rem', marginBottom: '0.3rem' }}>
-            Workspace Settings &amp; Profile
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
+            <span>WORKSPACE</span>
+            <span>/</span>
+            <span>SETTINGS &amp; AUDIT</span>
+          </div>
+          <h1 style={{ fontSize: '1.6rem', letterSpacing: '-0.02em' }}>
+            System Settings &amp; Configuration
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
-            Manage identity, notifications, API credentials, and cloud deployment targets.
-          </p>
         </div>
 
         <button
           onClick={handleResetData}
           className="btn btn-outline btn-sm"
-          style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
           id="settings-reset-demo-btn"
         >
-          <RotateCcw size={14} />
-          <span>Reset Demo Data</span>
+          <RotateCcw size={13} />
+          <span>Reset Defaults</span>
         </button>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--border-color)', marginBottom: '2rem', overflowX: 'auto' }}>
+      <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid var(--border-default)', marginBottom: '24px', overflowX: 'auto' }}>
         <button
           onClick={() => setActiveTab('profile')}
-          className={`btn-sm ${activeTab === 'profile' ? 'btn-primary' : 'btn-ghost'}`}
-          style={{ borderRadius: 'var(--radius-sm) var(--radius-sm) 0 0', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+          className={`btn-sm ${activeTab === 'profile' ? 'btn-secondary' : 'btn-ghost'}`}
+          style={{ borderBottom: activeTab === 'profile' ? '2px solid var(--accent)' : 'none', borderRadius: 'var(--radius-xs) var(--radius-xs) 0 0' }}
         >
-          <User size={15} />
-          <span>My Profile</span>
+          <User size={14} />
+          <span>Account Profile</span>
         </button>
 
         <button
           onClick={() => setActiveTab('preferences')}
-          className={`btn-sm ${activeTab === 'preferences' ? 'btn-primary' : 'btn-ghost'}`}
-          style={{ borderRadius: 'var(--radius-sm) var(--radius-sm) 0 0', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+          className={`btn-sm ${activeTab === 'preferences' ? 'btn-secondary' : 'btn-ghost'}`}
+          style={{ borderBottom: activeTab === 'preferences' ? '2px solid var(--accent)' : 'none', borderRadius: 'var(--radius-xs) var(--radius-xs) 0 0' }}
         >
-          <Bell size={15} />
+          <Sun size={14} />
           <span>Theme &amp; Notifications</span>
         </button>
 
         <button
           onClick={() => setActiveTab('api')}
-          className={`btn-sm ${activeTab === 'api' ? 'btn-primary' : 'btn-ghost'}`}
-          style={{ borderRadius: 'var(--radius-sm) var(--radius-sm) 0 0', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+          className={`btn-sm ${activeTab === 'api' ? 'btn-secondary' : 'btn-ghost'}`}
+          style={{ borderBottom: activeTab === 'api' ? '2px solid var(--accent)' : 'none', borderRadius: 'var(--radius-xs) var(--radius-xs) 0 0' }}
         >
-          <Key size={15} />
-          <span>API Keys &amp; Security</span>
+          <Key size={14} />
+          <span>API Credentials</span>
         </button>
 
         <button
           onClick={() => setActiveTab('deployment')}
-          className={`btn-sm ${activeTab === 'deployment' ? 'btn-primary' : 'btn-ghost'}`}
-          style={{ borderRadius: 'var(--radius-sm) var(--radius-sm) 0 0', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+          className={`btn-sm ${activeTab === 'deployment' ? 'btn-secondary' : 'btn-ghost'}`}
+          style={{ borderBottom: activeTab === 'deployment' ? '2px solid var(--accent)' : 'none', borderRadius: 'var(--radius-xs) var(--radius-xs) 0 0' }}
         >
-          <Globe size={15} />
-          <span>Render &amp; GitHub Setup</span>
+          <Globe size={14} />
+          <span>Render &amp; CI/CD</span>
         </button>
       </div>
 
-      {/* Tab 1: Profile Settings */}
+      {/* Tab 1: Profile */}
       {activeTab === 'profile' && (
-        <form onSubmit={handleSaveProfile} className="glass-card" style={{ maxWidth: '720px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '2rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
-            <div className="avatar-img" style={{ width: '64px', height: '64px', fontSize: '1.5rem' }}>
+        <form onSubmit={handleSaveProfile} className="panel" style={{ maxWidth: '640px', padding: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid var(--border-subtle)' }}>
+            <div className="avatar-img" style={{ width: '48px', height: '48px', fontSize: '1.1rem' }}>
               {user?.avatar || 'AM'}
             </div>
             <div>
-              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.2rem' }}>{name}</h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{role} • {user?.plan || 'Pro Workspace'}</p>
+              <div style={{ fontWeight: 600, fontSize: '1.05rem', color: 'var(--text-primary)' }}>{name}</div>
+              <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                {role} • {user?.plan || 'Enterprise Pro'}
+              </div>
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
             <div className="form-group">
               <label className="form-label">Full Name</label>
               <input
@@ -190,7 +190,7 @@ export default function Settings() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
             <div className="form-group">
               <label className="form-label">Professional Role</label>
               <input
@@ -202,7 +202,7 @@ export default function Settings() {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Organization / Team</label>
+              <label className="form-label">Organization</label>
               <input
                 type="text"
                 value={company}
@@ -213,7 +213,7 @@ export default function Settings() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Bio / Workspace Status</label>
+            <label className="form-label">Operational Bio</label>
             <textarea
               rows={3}
               value={bio}
@@ -223,10 +223,10 @@ export default function Settings() {
             />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
             <button type="submit" className="btn btn-primary" id="save-profile-btn">
-              <Save size={16} />
-              <span>Save Profile Changes</span>
+              <Save size={14} />
+              <span>Save Changes</span>
             </button>
           </div>
         </form>
@@ -234,90 +234,77 @@ export default function Settings() {
 
       {/* Tab 2: Theme & Notifications */}
       {activeTab === 'preferences' && (
-        <div className="glass-card" style={{ maxWidth: '720px' }}>
-          <h3 style={{ fontSize: '1.15rem', marginBottom: '1rem' }}>Display Theme</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+        <div className="panel" style={{ maxWidth: '640px', padding: '24px' }}>
+          <div className="label-caps" style={{ marginBottom: '8px' }}>COLOR THEME SPECIFICATION</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '24px' }}>
             <div
               onClick={() => { if (theme !== 'dark') toggleTheme(); }}
+              className="panel"
               style={{
-                padding: '1.25rem',
-                borderRadius: 'var(--radius-md)',
-                background: '#0d121f',
+                padding: '16px',
+                borderColor: theme === 'dark' ? 'var(--accent)' : 'var(--border-default)',
+                background: '#09090b',
                 color: '#fff',
-                border: theme === 'dark' ? '2px solid var(--primary)' : '1px solid var(--border-color)',
                 cursor: 'pointer',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                <Moon size={18} color="#818cf8" />
-                <span style={{ fontWeight: 600 }}>Dark Slate (Default)</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                <Moon size={15} color="var(--accent)" />
+                <span style={{ fontWeight: 600, fontSize: '0.88rem' }}>Dark Canvas (Default)</span>
               </div>
-              <p style={{ fontSize: '0.8rem', color: '#94a3b8' }}>High contrast, glowing glassmorphic elements.</p>
+              <p style={{ fontSize: '0.78rem', color: '#a1a1aa' }}>High contrast #09090b with strict hairline dividers.</p>
             </div>
 
             <div
               onClick={() => { if (theme !== 'light') toggleTheme(); }}
+              className="panel"
               style={{
-                padding: '1.25rem',
-                borderRadius: 'var(--radius-md)',
-                background: '#f8fafc',
-                color: '#0f172a',
-                border: theme === 'light' ? '2px solid var(--primary)' : '1px solid var(--border-color)',
+                padding: '16px',
+                borderColor: theme === 'light' ? 'var(--accent)' : 'var(--border-default)',
+                background: '#ffffff',
+                color: '#09090b',
                 cursor: 'pointer',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                <Sun size={18} color="#f59e0b" />
-                <span style={{ fontWeight: 600 }}>Clean Light</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                <Sun size={15} color="#f59e0b" />
+                <span style={{ fontWeight: 600, fontSize: '0.88rem' }}>Pure White</span>
               </div>
-              <p style={{ fontSize: '0.8rem', color: '#64748b' }}>Crisp paper white palette for high-light environments.</p>
+              <p style={{ fontSize: '0.78rem', color: '#52525b' }}>Utilitarian light theme for high-illumination environments.</p>
             </div>
           </div>
 
-          <h3 style={{ fontSize: '1.15rem', marginBottom: '1rem' }}>Notification Preferences</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
-            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>
+          <div className="label-caps" style={{ marginBottom: '8px' }}>DELIVERY NOTIFICATIONS</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: 'var(--bg-subtle)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-sm)', cursor: 'pointer' }}>
               <div>
-                <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Daily Sprint Digest</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Summary of PRs and task status sent every morning</div>
+                <div style={{ fontWeight: 600, fontSize: '0.84rem' }}>Daily Sprint Summary</div>
+                <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>Automated morning digest of merged PRs and closed tasks</div>
               </div>
               <input
                 type="checkbox"
                 checked={emailDigest}
                 onChange={(e) => setEmailDigest(e.target.checked)}
-                style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }}
+                style={{ accentColor: 'var(--accent)' }}
               />
             </label>
 
-            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>
+            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: 'var(--bg-subtle)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-sm)', cursor: 'pointer' }}>
               <div>
-                <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Task Assignment Alerts</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Real-time push notifications when you are mentioned</div>
+                <div style={{ fontWeight: 600, fontSize: '0.84rem' }}>Issue Mentions &amp; Reassignments</div>
+                <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>Immediate notification when assigned an issue</div>
               </div>
               <input
                 type="checkbox"
                 checked={taskAlerts}
                 onChange={(e) => setTaskAlerts(e.target.checked)}
-                style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }}
-              />
-            </label>
-
-            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>
-              <div>
-                <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Weekly Telemetry Performance Report</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>PDF export with sprint velocity curves and deploy times</div>
-              </div>
-              <input
-                type="checkbox"
-                checked={weeklyReport}
-                onChange={(e) => setWeeklyReport(e.target.checked)}
-                style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }}
+                style={{ accentColor: 'var(--accent)' }}
               />
             </label>
           </div>
 
           <button onClick={handleSaveProfile} className="btn btn-primary" id="save-prefs-btn">
-            <Save size={16} />
+            <Save size={14} />
             <span>Update Notification Rules</span>
           </button>
         </div>
@@ -325,85 +312,79 @@ export default function Settings() {
 
       {/* Tab 3: API & Security */}
       {activeTab === 'api' && (
-        <div className="glass-card" style={{ maxWidth: '720px' }}>
-          <h3 style={{ fontSize: '1.15rem', marginBottom: '0.5rem' }}>REST API Authentication</h3>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-            Use this bearer token to interact with the NexusFlow CLI, webhook hooks, and CI/CD triggers.
+        <div className="panel" style={{ maxWidth: '640px', padding: '24px' }}>
+          <div className="label-caps" style={{ marginBottom: '6px' }}>PROGRAMMATIC ACCESS</div>
+          <h3 style={{ fontSize: '1.05rem', marginBottom: '8px' }}>Bearer API Token</h3>
+          <p style={{ fontSize: '0.82rem', marginBottom: '16px' }}>
+            Used for authenticating webhooks, CLI triggers, and CI deployment monitors.
           </p>
 
           <div className="form-group">
-            <label className="form-label">Live Workspace Key</label>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <label className="form-label">Active API Key</label>
+            <div style={{ display: 'flex', gap: '8px' }}>
               <input
                 type="text"
                 readOnly
                 value={apiKey}
                 className="form-input"
-                style={{ fontFamily: 'var(--font-mono)', fontSize: '0.88rem' }}
+                style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem' }}
               />
               <button onClick={handleCopyKey} className="btn btn-secondary" style={{ flexShrink: 0 }}>
-                {copiedKey ? <Check size={16} color="var(--accent-emerald)" /> : <Copy size={16} />}
+                {copiedKey ? <Check size={14} color="var(--status-success)" /> : <Copy size={14} />}
                 <span>{copiedKey ? 'Copied' : 'Copy'}</span>
               </button>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem' }}>
+          <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
             <button onClick={handleRegenerateKey} className="btn btn-secondary btn-sm">
-              Regenerate API Token
+              Rotate Key
             </button>
           </div>
 
-          <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color)' }}>
-            <h4 style={{ fontSize: '0.95rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <Shield size={16} color="var(--accent-emerald)" />
-              <span>Two-Factor Authentication (2FA)</span>
-            </h4>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-              Hardware security key (WebAuthn/FIDO2) and authenticator app backup configured.
-            </p>
-            <span className="badge badge-success">2FA Active</span>
+          <div style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid var(--border-subtle)' }}>
+            <div className="label-caps" style={{ marginBottom: '6px' }}>AUTHENTICATION SECURITY</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontWeight: 600, fontSize: '0.86rem' }}>Hardware Two-Factor Authentication</div>
+                <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>FIDO2 / WebAuthn security keys enforced</div>
+              </div>
+              <span className="chip chip-success">2FA ENFORCED</span>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Tab 4: Deployment Setup Guide */}
+      {/* Tab 4: Deployment Specs */}
       {activeTab === 'deployment' && (
-        <div className="glass-card" style={{ maxWidth: '720px' }}>
-          <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Zero-Config Cloud Deployments</h3>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-            NexusFlow is configured and ready to be deployed directly to <strong>Render</strong> and <strong>GitHub Pages</strong>.
+        <div className="panel" style={{ maxWidth: '640px', padding: '24px' }}>
+          <div className="label-caps" style={{ marginBottom: '6px' }}>CONTINUOUS DELIVERY TARGETS</div>
+          <h3 style={{ fontSize: '1.05rem', marginBottom: '8px' }}>Render &amp; GitHub Actions Configuration</h3>
+          <p style={{ fontSize: '0.82rem', marginBottom: '20px' }}>
+            Target deployment specifications for zero-config automated static site hosting.
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            {/* Render Box */}
-            <div style={{ background: 'var(--bg-secondary)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>🚀 Option 1: Render Static Site</span>
-                <span className="badge badge-primary">Recommended</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div className="panel" style={{ padding: '14px', background: 'var(--bg-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                <span style={{ fontWeight: 600, fontSize: '0.88rem' }}>Render Static Site</span>
+                <span className="chip chip-success">CONFIGURED</span>
               </div>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>
-                1. Push this repository to your GitHub account.<br />
-                2. On Render Dashboard, click <strong>New +</strong> &rarr; <strong>Static Site</strong>.<br />
-                3. Connect your repository and configure:
-              </p>
-              <div style={{ background: 'var(--bg-primary)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem', fontFamily: 'var(--font-mono)', color: '#818cf8' }}>
-                Build Command: npm run build<br />
-                Publish Directory: dist
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+                Build Command: <code>npm run build</code><br />
+                Publish Directory: <code>dist</code><br />
+                Rewrite: <code>/* -&gt; /index.html 200</code> (via <code>public/_redirects</code>)
               </div>
             </div>
 
-            {/* GitHub Pages Box */}
-            <div style={{ background: 'var(--bg-secondary)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>🐙 Option 2: GitHub Pages (Automated Actions)</span>
-                <span className="badge badge-success">Free Hosting</span>
+            <div className="panel" style={{ padding: '14px', background: 'var(--bg-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                <span style={{ fontWeight: 600, fontSize: '0.88rem' }}>GitHub Actions CI/CD</span>
+                <span className="chip chip-success">CONFIGURED</span>
               </div>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>
-                Included <code>.github/workflows/deploy.yml</code> automatically builds and publishes every push to <code>main</code>:
-              </p>
-              <div style={{ background: 'var(--bg-primary)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem', fontFamily: 'var(--font-mono)', color: '#38bdf8' }}>
-                Repository &rarr; Settings &rarr; Pages &rarr; Source: GitHub Actions
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+                Workflow: <code>.github/workflows/deploy.yml</code><br />
+                Router: <code>HashRouter</code> (Eliminates 404 on page refresh)
               </div>
             </div>
           </div>

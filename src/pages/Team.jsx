@@ -5,9 +5,7 @@ import {
   Search, 
   Mail, 
   ShieldCheck, 
-  MoreHorizontal,
-  FolderGit2,
-  CheckCircle2
+  FolderGit2
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import InviteModal from '../components/InviteModal';
@@ -25,11 +23,11 @@ export default function Team() {
       role: 'Staff Product Engineer',
       dept: 'Engineering',
       avatar: 'AM',
-      color: 'linear-gradient(135deg, #6366f1, #06b6d4)',
       status: 'online',
       email: 'alex.morgan@nexusflow.io',
       activeTasks: 4,
       accessLevel: 'Admin',
+      lastActive: 'Active now',
     },
     {
       id: 'mem-2',
@@ -37,11 +35,11 @@ export default function Team() {
       role: 'Principal Cloud Architect',
       dept: 'DevOps & Cloud',
       avatar: 'SC',
-      color: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
       status: 'online',
       email: 'sarah.chen@nexusflow.io',
       activeTasks: 5,
       accessLevel: 'Admin',
+      lastActive: 'Active now',
     },
     {
       id: 'mem-3',
@@ -49,11 +47,11 @@ export default function Team() {
       role: 'Senior Backend Developer',
       dept: 'Engineering',
       avatar: 'MV',
-      color: 'linear-gradient(135deg, #3b82f6, #10b981)',
       status: 'busy',
       email: 'marcus.v@nexusflow.io',
       activeTasks: 3,
       accessLevel: 'Contributor',
+      lastActive: '45m ago',
     },
     {
       id: 'mem-4',
@@ -61,35 +59,35 @@ export default function Team() {
       role: 'Lead UX / Systems Designer',
       dept: 'Product Design',
       avatar: 'ER',
-      color: 'linear-gradient(135deg, #f59e0b, #ef4444)',
       status: 'online',
       email: 'elena.r@nexusflow.io',
       activeTasks: 2,
       accessLevel: 'Contributor',
+      lastActive: '12m ago',
     },
     {
       id: 'mem-5',
       name: 'Darius Thorne',
-      role: 'Quality & Test Automation Engineer',
+      role: 'QA Automation Engineer',
       dept: 'Engineering',
       avatar: 'DT',
-      color: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
       status: 'offline',
       email: 'darius.t@nexusflow.io',
       activeTasks: 1,
       accessLevel: 'Contributor',
+      lastActive: '2d ago',
     },
     {
       id: 'mem-6',
       name: 'Kavita Patel',
-      role: 'VP of Product Innovation',
+      role: 'VP of Engineering',
       dept: 'Leadership',
       avatar: 'KP',
-      color: 'linear-gradient(135deg, #10b981, #06b6d4)',
       status: 'online',
       email: 'kavita.p@nexusflow.io',
       activeTasks: 6,
       accessLevel: 'Owner',
+      lastActive: 'Active now',
     },
   ]);
 
@@ -100,14 +98,14 @@ export default function Team() {
       role: inviteData.role,
       dept: 'Engineering',
       avatar: inviteData.email.substring(0, 2).toUpperCase(),
-      color: 'linear-gradient(135deg, #6366f1, #a855f7)',
       status: 'online',
       email: inviteData.email,
       activeTasks: 0,
       accessLevel: 'Contributor',
+      lastActive: 'Just invited',
     };
     setMembers(prev => [newMember, ...prev]);
-    showToast(`Invite dispatched and member added to directory!`, 'success');
+    showToast(`Access invitation dispatched to ${inviteData.email}`, 'success');
   };
 
   const filteredMembers = members.filter(m => {
@@ -121,14 +119,16 @@ export default function Team() {
   return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ fontSize: '1.9rem', marginBottom: '0.3rem' }}>
-            Team Directory &amp; Permissions
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
+            <span>WORKSPACE</span>
+            <span>/</span>
+            <span>RBAC &amp; ACCESS</span>
+          </div>
+          <h1 style={{ fontSize: '1.6rem', letterSpacing: '-0.02em' }}>
+            Collaborator Directory &amp; Permissions
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
-            Manage {members.length} active collaborators, access controls, and active workload.
-          </p>
         </div>
 
         <button
@@ -136,33 +136,32 @@ export default function Team() {
           className="btn btn-primary btn-sm"
           id="team-invite-btn"
         >
-          <UserPlus size={16} />
-          <span>Invite Teammate</span>
+          <UserPlus size={14} />
+          <span>Invite Engineer</span>
         </button>
       </div>
 
       {/* Filter and Search Bar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div className="input-with-icon" style={{ minWidth: '260px', maxWidth: '380px', flex: 1 }}>
-          <Search size={15} className="input-icon" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '12px' }}>
+        <div className="input-with-icon" style={{ minWidth: '260px', maxWidth: '360px', flex: 1 }}>
+          <Search size={14} className="input-icon" />
           <input
             type="text"
-            placeholder="Search by name, role or email..."
+            placeholder="Search by engineer, role or email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="form-input"
-            style={{ padding: '0.55rem 0.75rem 0.55rem 2.4rem', fontSize: '0.88rem' }}
+            style={{ paddingLeft: '32px', fontSize: '0.82rem', paddingBlock: '6px' }}
           />
         </div>
 
-        {/* Dept Pills */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', overflowX: 'auto', paddingBottom: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           {['All', 'Engineering', 'Product Design', 'DevOps & Cloud', 'Leadership'].map((dept) => (
             <button
               key={dept}
               onClick={() => setDeptFilter(dept)}
-              className={`btn-sm ${deptFilter === dept ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ fontSize: '0.8rem', padding: '0.35rem 0.8rem' }}
+              className={`btn-sm ${deptFilter === dept ? 'btn-secondary' : 'btn-ghost'}`}
+              style={{ fontSize: '0.75rem', padding: '3px 8px', borderRadius: 'var(--radius-xs)' }}
             >
               {dept}
             </button>
@@ -170,104 +169,71 @@ export default function Team() {
         </div>
       </div>
 
-      {/* Team Member Cards Grid */}
+      {/* Structured Directory Grid */}
       <div className="grid-3">
         {filteredMembers.map((member) => (
           <div
             key={member.id}
-            className="glass-card"
+            className="panel"
             style={{
-              padding: '1.4rem',
+              padding: '16px',
               display: 'flex',
               flexDirection: 'column',
-              position: 'relative',
+              gap: '12px',
             }}
           >
-            {/* Top row: Avatar & Status & Role */}
-            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1rem' }}>
-              <div style={{ position: 'relative' }}>
-                <div
-                  className="avatar-img"
-                  style={{
-                    width: '52px',
-                    height: '52px',
-                    fontSize: '1.1rem',
-                    background: member.color,
-                  }}
-                >
-                  {member.avatar}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ position: 'relative' }}>
+                  <div className="avatar-img" style={{ width: '36px', height: '36px', fontSize: '0.82rem' }}>
+                    {member.avatar}
+                  </div>
+                  <span
+                    className={`indicator-dot ${member.status}`}
+                    style={{ position: 'absolute', bottom: '-1px', right: '-1px', border: '2px solid var(--bg-surface)' }}
+                  />
                 </div>
-                <span
-                  className={`status-dot ${member.status}`}
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    right: 0,
-                    border: '2px solid var(--bg-card)',
-                    width: '12px',
-                    height: '12px',
-                  }}
-                  title={`Status: ${member.status}`}
-                />
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+                    {member.name}
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    {member.dept}
+                  </div>
+                </div>
               </div>
 
-              <span
-                className={`badge ${
-                  member.accessLevel === 'Owner'
-                    ? 'badge-warning'
-                    : member.accessLevel === 'Admin'
-                    ? 'badge-primary'
-                    : 'badge-info'
-                }`}
-              >
+              <span className={`chip ${
+                member.accessLevel === 'Owner' ? 'chip-warning' : member.accessLevel === 'Admin' ? 'chip-accent' : ''
+              }`} style={{ fontSize: '0.7rem' }}>
                 {member.accessLevel}
               </span>
             </div>
 
-            {/* Member Details */}
-            <div style={{ marginBottom: '1.25rem' }}>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.2rem', color: 'var(--text-primary)' }}>
-                {member.name}
-              </h3>
-              <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
-                {member.role}
-              </div>
-              <span className="badge badge-purple" style={{ fontSize: '0.72rem' }}>
-                {member.dept}
-              </span>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+              {member.role}
             </div>
 
-            {/* Contact & Tasks count */}
             <div
               style={{
                 marginTop: 'auto',
-                paddingTop: '0.85rem',
-                borderTop: '1px solid var(--border-color)',
+                paddingTop: '10px',
+                borderTop: '1px solid var(--border-subtle)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                fontSize: '0.8rem',
+                fontSize: '0.75rem',
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--text-muted)',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--text-muted)' }}>
-                <FolderGit2 size={14} />
-                <span>{member.activeTasks} Active Tasks</span>
-              </div>
-
-              <a
-                href={`mailto:${member.email}`}
-                className="action-icon-btn"
-                style={{ width: '30px', height: '30px' }}
-                title={`Email ${member.name}`}
-              >
-                <Mail size={13} />
-              </a>
+              <span>{member.activeTasks} Active Issues</span>
+              <span>{member.lastActive}</span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Invite Modal */}
       <InviteModal
         isOpen={isInviteModalOpen}
         onClose={() => setIsInviteModalOpen(false)}

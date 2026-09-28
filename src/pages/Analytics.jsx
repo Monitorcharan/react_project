@@ -5,10 +5,7 @@ import {
   Clock, 
   Zap, 
   Globe, 
-  Server, 
-  ShieldCheck, 
   Activity,
-  ArrowUpRight,
   Download
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
@@ -18,24 +15,22 @@ export default function Analytics() {
   const [timeRange, setTimeRange] = useState('30D');
 
   const performanceMetrics = [
-    { label: 'Edge Cache Hit Rate', value: '98.6%', change: '+1.2%', positive: true, icon: Zap, color: '#38bdf8' },
-    { label: 'Avg Build Time', value: '14.2s', change: '-3.4s', positive: true, icon: Clock, color: '#818cf8' },
-    { label: 'Global p99 Latency', value: '18ms', change: '-4ms', positive: true, icon: Activity, color: '#34d399' },
-    { label: 'Error Rate (5xx)', value: '0.001%', change: '0.0%', positive: true, icon: ShieldCheck, color: '#c084fc' },
+    { label: 'EDGE CACHE HIT RATIO', value: '98.6%', change: '+1.2%', positive: true },
+    { label: 'AVG BUILD COMPILATION', value: '854ms', change: '-240ms', positive: true },
+    { label: 'P99 NETWORK LATENCY', value: '14.2ms', change: '-3.1ms', positive: true },
+    { label: 'CRASH / ERROR RATE (5XX)', value: '0.001%', change: '0.0%', positive: true },
   ];
 
   const handleExport = () => {
-    showToast('Analytics summary exported as JSON report', 'success');
+    showToast('Exported telemetry metrics as JSON dataset', 'success');
   };
 
-  // SVG Area points for 30D / 7D / 90D
   const points = timeRange === '7D'
     ? [20, 45, 30, 60, 50, 75, 90]
     : timeRange === '90D'
     ? [15, 25, 30, 45, 40, 60, 55, 70, 65, 80, 85, 95]
     : [25, 35, 28, 52, 48, 65, 58, 72, 80, 75, 88, 94];
 
-  // Generate SVG path for smoothed line chart
   const width = 600;
   const height = 180;
   const stepX = width / (points.length - 1);
@@ -59,26 +54,27 @@ export default function Analytics() {
 
   return (
     <div>
-      {/* Page Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ fontSize: '1.9rem', marginBottom: '0.3rem' }}>
-            System Telemetry &amp; Velocity
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
+            <span>WORKSPACE</span>
+            <span>/</span>
+            <span>TELEMETRY</span>
+          </div>
+          <h1 style={{ fontSize: '1.6rem', letterSpacing: '-0.02em' }}>
+            System Telemetry &amp; Delivery Cadence
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
-            Real-time performance metrics, sprint output, and edge deployment latency.
-          </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          {/* Time range pills */}
-          <div style={{ display: 'flex', background: 'var(--bg-secondary)', padding: '0.2rem', borderRadius: 'var(--radius-md)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', background: 'var(--bg-canvas)', border: '1px solid var(--border-default)', padding: '2px', borderRadius: 'var(--radius-sm)' }}>
             {['7D', '30D', '90D'].map((range) => (
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
-                className={`btn-sm ${timeRange === range ? 'btn-primary' : 'btn-ghost'}`}
-                style={{ fontSize: '0.78rem' }}
+                className={`btn-sm ${timeRange === range ? 'btn-secondary' : 'btn-ghost'}`}
+                style={{ fontSize: '0.74rem', padding: '3px 8px', borderRadius: 'var(--radius-xs)', fontFamily: 'var(--font-mono)' }}
               >
                 {range}
               </button>
@@ -86,69 +82,56 @@ export default function Analytics() {
           </div>
 
           <button onClick={handleExport} className="btn btn-secondary btn-sm" id="export-metrics-btn">
-            <Download size={15} />
-            <span>Export Report</span>
+            <Download size={13} />
+            <span>Export JSON</span>
           </button>
         </div>
       </div>
 
       {/* 4 Metric Cards */}
-      <div className="grid-4" style={{ marginBottom: '2rem' }}>
-        {performanceMetrics.map((metric, i) => {
-          const Icon = metric.icon;
-          return (
-            <div key={i} className="stat-card">
-              <div className="stat-card-header">
-                <span className="stat-card-title">{metric.label}</span>
-                <div className="stat-icon" style={{ background: 'rgba(255,255,255,0.05)', color: metric.color }}>
-                  <Icon size={18} />
-                </div>
-              </div>
-              <div className="stat-value">{metric.value}</div>
-              <div className="stat-footer">
-                <span className="stat-trend up">
-                  <TrendingUp size={14} />
-                  {metric.change}
-                </span>
-                <span style={{ color: 'var(--text-muted)' }}>over period</span>
-              </div>
+      <div className="grid-4" style={{ marginBottom: '24px' }}>
+        {performanceMetrics.map((metric, i) => (
+          <div key={i} className="stat-card">
+            <div className="stat-card-title">{metric.label}</div>
+            <div className="stat-value">{metric.value}</div>
+            <div className="stat-footer">
+              <span className="stat-trend up">
+                <TrendingUp size={13} />
+                {metric.change}
+              </span>
+              <span style={{ color: 'var(--text-muted)' }}>period shift</span>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
-      {/* Main Charts Grid */}
-      <div className="grid-2" style={{ marginBottom: '2rem' }}>
-        {/* Chart 1: Sprint Velocity & Delivery Trend */}
-        <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+      {/* Main Charts */}
+      <div className="grid-2" style={{ marginBottom: '24px' }}>
+        {/* Chart 1: Velocity Curve */}
+        <div className="panel" style={{ padding: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
             <div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.2rem' }}>Sprint Delivery Velocity</h3>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Story points cleared per deploy cycle</p>
+              <h3 style={{ fontSize: '0.95rem', marginBottom: '2px' }}>Sprint Story Velocity</h3>
+              <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>STORY POINTS CLEARED / SPRINT CYCLE</p>
             </div>
-            <span className="badge badge-success">+24% vs baseline</span>
+            <span className="chip chip-success">+24% vs Q2 Baseline</span>
           </div>
 
-          {/* SVG Area Chart */}
-          <div style={{ width: '100%', height: '200px', position: 'relative', marginTop: 'auto' }}>
+          <div style={{ width: '100%', height: '180px', position: 'relative' }}>
             <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: '100%', overflow: 'visible' }}>
               <defs>
                 <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#6366f1" stopOpacity="0.45" />
-                  <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
+                  <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
+                  <stop offset="100%" stopColor="#2563eb" stopOpacity="0.0" />
                 </linearGradient>
               </defs>
-              {/* Horizontal Grid lines */}
-              <line x1="0" y1={height * 0.25} x2={width} y2={height * 0.25} stroke="var(--border-subtle)" strokeDasharray="3 3" />
-              <line x1="0" y1={height * 0.5} x2={width} y2={height * 0.5} stroke="var(--border-subtle)" strokeDasharray="3 3" />
-              <line x1="0" y1={height * 0.75} x2={width} y2={height * 0.75} stroke="var(--border-subtle)" strokeDasharray="3 3" />
+              <line x1="0" y1={height * 0.25} x2={width} y2={height * 0.25} stroke="var(--border-subtle)" strokeDasharray="2 2" />
+              <line x1="0" y1={height * 0.5} x2={width} y2={height * 0.5} stroke="var(--border-subtle)" strokeDasharray="2 2" />
+              <line x1="0" y1={height * 0.75} x2={width} y2={height * 0.75} stroke="var(--border-subtle)" strokeDasharray="2 2" />
 
-              {/* Gradient Area Fill */}
               <path d={areaD} fill="url(#areaGradient)" />
-              {/* Line Stroke */}
-              <path d={pathD} fill="none" stroke="#818cf8" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+              <path d={pathD} fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 
-              {/* Data point dots */}
               {points.map((val, idx) => {
                 const cx = idx * stepX;
                 const cy = height - (val / 100) * (height - 30) - 15;
@@ -157,59 +140,57 @@ export default function Analytics() {
                     key={idx}
                     cx={cx}
                     cy={cy}
-                    r="4"
-                    fill="#0d121f"
-                    stroke="#818cf8"
-                    strokeWidth="2.5"
+                    r="3"
+                    fill="var(--bg-canvas)"
+                    stroke="#2563eb"
+                    strokeWidth="2"
                   />
                 );
               })}
             </svg>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.75rem' }}>
-            <span>Cycle Start</span>
-            <span>Mid-Sprint Peak</span>
-            <span>Current Release</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
+            <span>CYCLE START (T-0)</span>
+            <span>MID-CYCLE (T-14)</span>
+            <span>STABLE RELEASE</span>
           </div>
         </div>
 
-        {/* Chart 2: Deploys vs PRs Bar Distribution */}
-        <div className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+        {/* Chart 2: Deploys vs PRs */}
+        <div className="panel" style={{ padding: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
             <div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.2rem' }}>Deployment Frequency</h3>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Daily production builds vs pull requests</p>
+              <h3 style={{ fontSize: '0.95rem', marginBottom: '2px' }}>Production Deploys vs PR Merges</h3>
+              <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>7-DAY ROLLING CI RUNS</p>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <span style={{ width: '8px', height: '8px', background: '#38bdf8', borderRadius: '2px' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.74rem', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ width: '8px', height: '8px', background: 'var(--accent)', borderRadius: '1px' }} />
                 <span>Deploys</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <span style={{ width: '8px', height: '8px', background: '#a855f7', borderRadius: '2px' }} />
-                <span>PRs Merged</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ width: '8px', height: '8px', background: 'var(--text-muted)', borderRadius: '1px' }} />
+                <span>PRs</span>
               </div>
             </div>
           </div>
 
-          {/* Custom SVG Bar Chart */}
-          <div style={{ width: '100%', height: '200px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-color)' }}>
+          <div style={{ width: '100%', height: '180px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '12px', paddingBottom: '4px', borderBottom: '1px solid var(--border-default)' }}>
             {barData.map((item, idx) => {
               const maxVal = 40;
-              const deployHeight = (item.deploys / maxVal) * 160;
-              const prHeight = (item.prs / maxVal) * 160;
+              const deployHeight = (item.deploys / maxVal) * 140;
+              const prHeight = (item.prs / maxVal) * 140;
 
               return (
                 <div key={idx} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', justifyContent: 'flex-end' }}>
-                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', width: '100%', justifyContent: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px', width: '100%', justifyContent: 'center' }}>
                     <div
                       style={{
                         width: '45%',
                         height: `${deployHeight}px`,
-                        background: 'linear-gradient(180deg, #38bdf8 0%, #0284c7 100%)',
-                        borderRadius: '3px 3px 0 0',
-                        transition: 'height 0.3s ease',
+                        background: 'var(--accent)',
+                        borderRadius: '1px 1px 0 0',
                       }}
                       title={`${item.day} Deploys: ${item.deploys}`}
                     />
@@ -217,80 +198,74 @@ export default function Analytics() {
                       style={{
                         width: '45%',
                         height: `${prHeight}px`,
-                        background: 'linear-gradient(180deg, #c084fc 0%, #7c3aed 100%)',
-                        borderRadius: '3px 3px 0 0',
-                        transition: 'height 0.3s ease',
+                        background: 'var(--text-muted)',
+                        borderRadius: '1px 1px 0 0',
                       }}
                       title={`${item.day} PRs: ${item.prs}`}
                     />
                   </div>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>{item.day}</span>
+                  <span style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', marginTop: '6px' }}>{item.day}</span>
                 </div>
               );
             })}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.75rem' }}>
-            <span>Weekly Total: 109 Deploys</span>
-            <span style={{ color: 'var(--accent-emerald)', fontWeight: 600 }}>100% CI Pipeline Success</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', marginTop: '8px' }}>
+            <span>TOTAL: 109 DEPLOYS</span>
+            <span style={{ color: 'var(--status-success)' }}>100% PIPELINE STABILITY</span>
           </div>
         </div>
       </div>
 
       {/* Regional Edge Infrastructure Table */}
-      <div className="glass-card" style={{ padding: '1.5rem' }}>
-        <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Globe size={18} color="var(--primary)" />
-          <span>Render &amp; GitHub Global Edge CDN Performance</span>
-        </h3>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
-          Continuous synthetic latency tests executed every 60 seconds from distributed nodes.
-        </p>
+      <div className="panel" style={{ padding: '16px' }}>
+        <div className="label-caps" style={{ marginBottom: '4px' }}>GLOBAL ROUTING NODES</div>
+        <h3 style={{ fontSize: '1rem', marginBottom: '12px' }}>Render Edge &amp; GitHub Pages Point-of-Presence (POP)</h3>
 
-        <div className="table-container">
-          <table className="custom-table">
+        <div className="table-wrap">
+          <table className="dense-table">
             <thead>
               <tr>
-                <th>Region / Edge Node</th>
-                <th>Provider</th>
+                <th>Region Node</th>
+                <th>Provider Target</th>
                 <th>Avg Latency</th>
                 <th>P99 Response</th>
                 <th>Availability</th>
-                <th>Status</th>
+                <th>Health</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>US East (N. Virginia)</td>
                 <td>Render Cloud</td>
-                <td>12 ms</td>
-                <td>18 ms</td>
+                <td>12.1 ms</td>
+                <td>16.4 ms</td>
                 <td>100.0%</td>
-                <td><span className="badge badge-success">Optimal</span></td>
+                <td><span className="chip chip-success">OPTIMAL</span></td>
               </tr>
               <tr>
                 <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Europe (Frankfurt)</td>
                 <td>Render Cloud</td>
-                <td>16 ms</td>
-                <td>22 ms</td>
+                <td>15.8 ms</td>
+                <td>20.2 ms</td>
                 <td>99.99%</td>
-                <td><span className="badge badge-success">Optimal</span></td>
+                <td><span className="chip chip-success">OPTIMAL</span></td>
               </tr>
               <tr>
                 <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Asia Pacific (Singapore)</td>
                 <td>Render Cloud</td>
-                <td>24 ms</td>
-                <td>31 ms</td>
+                <td>23.4 ms</td>
+                <td>29.1 ms</td>
                 <td>99.98%</td>
-                <td><span className="badge badge-success">Optimal</span></td>
+                <td><span className="chip chip-success">OPTIMAL</span></td>
               </tr>
               <tr>
                 <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Global Fastly / GH Edge</td>
                 <td>GitHub Pages CDN</td>
-                <td>14 ms</td>
-                <td>19 ms</td>
+                <td>14.0 ms</td>
+                <td>18.5 ms</td>
                 <td>100.0%</td>
-                <td><span className="badge badge-info">Active</span></td>
+                <td><span className="chip chip-success">OPTIMAL</span></td>
               </tr>
             </tbody>
           </table>

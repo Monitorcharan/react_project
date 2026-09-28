@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, Flag, Calendar, Tag, User } from 'lucide-react';
+import { X, Check, Flag, Calendar, Tag, User } from 'lucide-react';
 
 export default function TaskModal({ isOpen, onClose, onAddTask }) {
   const [title, setTitle] = useState('');
@@ -15,7 +15,6 @@ export default function TaskModal({ isOpen, onClose, onAddTask }) {
     if (!title.trim()) return;
 
     onAddTask({
-      id: 'task_' + Date.now().toString(36),
       title: title.trim(),
       category,
       priority,
@@ -32,20 +31,20 @@ export default function TaskModal({ isOpen, onClose, onAddTask }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-          <h3 style={{ fontSize: '1.25rem' }}>Create Workspace Task</h3>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '10px', borderBottom: '1px solid var(--border-default)' }}>
+          <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-primary)' }}>Create Workspace Issue</div>
           <button
             onClick={onClose}
             style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
-            aria-label="Close modal"
+            aria-label="Close"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Task Title</label>
+            <label className="form-label">Issue Title</label>
             <input
               type="text"
               required
@@ -57,12 +56,9 @@ export default function TaskModal({ isOpen, onClose, onAddTask }) {
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div className="form-group">
-              <label className="form-label">
-                <Tag size={13} style={{ display: 'inline', marginRight: '4px' }} />
-                Category
-              </label>
+              <label className="form-label">Category</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
@@ -71,16 +67,13 @@ export default function TaskModal({ isOpen, onClose, onAddTask }) {
                 <option value="Frontend">Frontend UI</option>
                 <option value="Backend">API &amp; Backend</option>
                 <option value="DevOps">CI/CD &amp; Cloud</option>
-                <option value="Design">Product Design</option>
-                <option value="QA">Quality Assurance</option>
+                <option value="Security">Security &amp; Auth</option>
+                <option value="Design">Design Systems</option>
               </select>
             </div>
 
             <div className="form-group">
-              <label className="form-label">
-                <Flag size={13} style={{ display: 'inline', marginRight: '4px' }} />
-                Priority
-              </label>
+              <label className="form-label">Priority</label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
@@ -94,29 +87,23 @@ export default function TaskModal({ isOpen, onClose, onAddTask }) {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div className="form-group">
-              <label className="form-label">
-                <User size={13} style={{ display: 'inline', marginRight: '4px' }} />
-                Assignee
-              </label>
+              <label className="form-label">Assignee</label>
               <select
                 value={assignee}
                 onChange={(e) => setAssignee(e.target.value)}
                 className="form-input"
               >
-                <option value="Alex Morgan">Alex Morgan (You)</option>
-                <option value="Sarah Chen">Sarah Chen (Lead)</option>
+                <option value="Alex Morgan">Alex Morgan</option>
+                <option value="Sarah Chen">Sarah Chen</option>
                 <option value="Marcus Vance">Marcus Vance</option>
                 <option value="Elena Rostova">Elena Rostova</option>
               </select>
             </div>
 
             <div className="form-group">
-              <label className="form-label">
-                <Calendar size={13} style={{ display: 'inline', marginRight: '4px' }} />
-                Target Due Date
-              </label>
+              <label className="form-label">Target Due Date</label>
               <input
                 type="text"
                 placeholder="e.g. In 2 days"
@@ -127,13 +114,13 @@ export default function TaskModal({ isOpen, onClose, onAddTask }) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem' }}>
-            <button type="button" onClick={onClose} className="btn btn-ghost btn-sm">
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '20px', paddingTop: '12px', borderTop: '1px solid var(--border-subtle)' }}>
+            <button type="button" onClick={onClose} className="btn btn-secondary btn-sm">
               Cancel
             </button>
             <button type="submit" className="btn btn-primary btn-sm">
-              <CheckCircle2 size={16} />
-              <span>Create Task</span>
+              <Check size={14} />
+              <span>Register Issue</span>
             </button>
           </div>
         </form>

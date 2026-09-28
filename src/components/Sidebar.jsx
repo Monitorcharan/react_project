@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { 
-  Layers, 
+  Terminal, 
   LayoutDashboard, 
   CheckSquare, 
   BarChart3, 
@@ -9,8 +9,7 @@ import {
   Settings, 
   ExternalLink, 
   LogOut, 
-  Sparkles,
-  ChevronRight
+  Server
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -27,16 +26,15 @@ export default function Sidebar({ isOpen, onClose }) {
   };
 
   const navItems = [
-    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, badge: null },
-    { to: '/projects', label: 'Projects & Tasks', icon: CheckSquare, badge: '6' },
-    { to: '/analytics', label: 'Analytics Hub', icon: BarChart3, badge: 'Live' },
-    { to: '/team', label: 'Team Directory', icon: Users, badge: null },
-    { to: '/settings', label: 'Settings & Security', icon: Settings, badge: null },
+    { to: '/dashboard', label: 'Overview', icon: LayoutDashboard, kbd: 'G D', badge: null },
+    { to: '/projects', label: 'Issues & Tasks', icon: CheckSquare, kbd: 'G P', badge: '6' },
+    { to: '/analytics', label: 'Edge Telemetry', icon: BarChart3, kbd: 'G A', badge: '14ms' },
+    { to: '/team', label: 'Team & RBAC', icon: Users, kbd: 'G T', badge: null },
+    { to: '/settings', label: 'Settings & Keys', icon: Settings, kbd: 'G S', badge: null },
   ];
 
   return (
     <>
-      {/* Mobile Backdrop */}
       {isOpen && (
         <div
           onClick={onClose}
@@ -45,38 +43,29 @@ export default function Sidebar({ isOpen, onClose }) {
             inset: 0,
             background: 'rgba(0,0,0,0.6)',
             zIndex: 90,
-            backdropFilter: 'blur(3px)',
           }}
           className="mobile-backdrop"
         />
       )}
 
-      <aside
-        className="app-sidebar"
-        style={{
-          position: window.innerWidth < 1024 ? 'fixed' : 'relative',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          transform: window.innerWidth < 1024 && !isOpen ? 'translateX(-100%)' : 'translateX(0)',
-          zIndex: 100,
-          minHeight: '100vh',
-          boxShadow: isOpen ? 'var(--shadow-lg)' : 'none',
-        }}
-      >
-        {/* Brand Header */}
+      <aside className={`app-sidebar ${isOpen ? 'open' : ''}`}>
+
+        {/* Workspace Brand / Selector */}
         <div className="sidebar-header">
-          <Link to="/" className="brand-logo" style={{ fontSize: '1.2rem' }}>
-            <div className="brand-icon-box" style={{ width: '32px', height: '32px' }}>
-              <Layers size={18} />
+          <Link to="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="brand-icon-box">
+              <Terminal size={14} />
             </div>
-            <span>Nexus<span style={{ color: 'var(--primary)' }}>Flow</span></span>
+            <div style={{ lineHeight: 1.2 }}>
+              <div style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--text-primary)' }}>NexusFlow</div>
+              <div style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>prod-cluster // us-east</div>
+            </div>
           </Link>
         </div>
 
-        {/* Navigation Section */}
+        {/* Navigation Items */}
         <div className="sidebar-nav">
-          <span className="sidebar-section-title">Core Workspace</span>
+          <span className="sidebar-section-title">OPERATIONS</span>
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -89,66 +78,65 @@ export default function Sidebar({ isOpen, onClose }) {
                 className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
                 id={`sidebar-link-${item.label.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
               >
-                <Icon size={19} />
+                <Icon size={16} />
                 <span>{item.label}</span>
-                {item.badge && (
-                  <span className={`item-badge ${item.badge === 'Live' ? 'badge-success' : ''}`}>
-                    {item.badge}
-                  </span>
+                {item.badge ? (
+                  <span className="item-badge">{item.badge}</span>
+                ) : (
+                  <span className="item-badge" style={{ opacity: 0.6 }}>{item.kbd}</span>
                 )}
               </NavLink>
             );
           })}
 
-          <span className="sidebar-section-title" style={{ marginTop: '1.5rem' }}>Portals</span>
+          <span className="sidebar-section-title" style={{ marginTop: '16px' }}>PORTALS</span>
           <Link to="/" className="sidebar-item" target="_blank" rel="noopener noreferrer">
-            <ExternalLink size={17} />
-            <span>Public Showcase</span>
-            <ChevronRight size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+            <ExternalLink size={15} />
+            <span>Public Home</span>
           </Link>
 
-          {/* Pro Workspace Badge / Banner */}
+          {/* System Telemetry Spec Panel */}
           <div
-            className="glass-card"
+            className="panel"
             style={{
               marginTop: 'auto',
-              marginBottom: '1rem',
-              padding: '1rem',
-              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(6, 182, 212, 0.12) 100%)',
-              borderColor: 'rgba(99, 102, 241, 0.25)',
+              marginBottom: '12px',
+              padding: '10px',
+              background: 'var(--bg-canvas)',
+              fontSize: '0.74rem',
+              fontFamily: 'var(--font-mono)',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#818cf8', fontWeight: 700, fontSize: '0.82rem', marginBottom: '0.35rem' }}>
-              <Sparkles size={14} />
-              <span>{user?.plan || 'Enterprise Pro'}</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>RENDER EDGE:</span>
+              <span style={{ color: 'var(--status-success)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span className="indicator-dot online" /> 28 POPs
+              </span>
             </div>
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>
-              Unlimited collaborative sprints &amp; real-time cloud analytics enabled.
-            </p>
-            <div style={{ width: '100%', height: '4px', background: 'var(--bg-tertiary)', borderRadius: '2px', overflow: 'hidden' }}>
-              <div style={{ width: '74%', height: '100%', background: 'linear-gradient(90deg, #6366f1, #06b6d4)' }} />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ color: 'var(--text-muted)' }}>BUILD REV:</span>
+              <span style={{ color: 'var(--text-secondary)' }}>03f1e83</span>
             </div>
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.35rem' }}>74% cloud storage used</span>
           </div>
         </div>
 
-        {/* User Mini Card in Footer */}
+        {/* User Mini Row */}
         <div className="sidebar-footer">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
             <Link
               to="/settings"
-              style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', overflow: 'hidden', flex: 1 }}
-              title="View Profile Settings"
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden', flex: 1 }}
+              title="Account settings"
             >
               <div className="avatar-img">
                 {user?.avatar || 'NU'}
               </div>
               <div style={{ overflow: 'hidden' }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                  {user?.name || 'Nexus User'}
+                <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                  {user?.name || 'Engineer'}
                 </div>
-                <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                  {user?.role || 'Developer'}
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  {user?.role || 'Staff Lead'}
                 </div>
               </div>
             </Link>
@@ -156,11 +144,11 @@ export default function Sidebar({ isOpen, onClose }) {
             <button
               onClick={handleLogout}
               className="action-icon-btn"
-              title="Sign Out"
-              style={{ width: '32px', height: '32px', flexShrink: 0 }}
+              title="Terminate session"
+              style={{ width: '28px', height: '28px' }}
               aria-label="Sign out"
             >
-              <LogOut size={15} />
+              <LogOut size={13} />
             </button>
           </div>
         </div>

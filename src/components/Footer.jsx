@@ -1,83 +1,73 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Layers, Heart } from 'lucide-react';
-import { GitHubIcon, TwitterIcon, LinkedInIcon } from './Icons';
+import { Terminal, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { GitHubIcon } from './Icons';
 
 export default function Footer() {
   return (
     <footer className="public-footer">
       <div className="container">
         <div className="footer-grid">
-          {/* Col 1: Brand */}
+          {/* Col 1 */}
           <div>
-            <div className="brand-logo" style={{ marginBottom: '1rem' }}>
-              <div className="brand-icon-box" style={{ width: '32px', height: '32px' }}>
-                <Layers size={18} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <div className="brand-icon-box" style={{ width: '22px', height: '22px' }}>
+                <Terminal size={13} />
               </div>
-              <span style={{ fontSize: '1.2rem' }}>Nexus<span style={{ color: 'var(--primary)' }}>Flow</span></span>
+              <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>NexusFlow</span>
             </div>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.6', maxWidth: '320px', marginBottom: '1.25rem' }}>
-              The unified Work Operating System designed for high-velocity software engineering, design, and product organizations.
+            <p style={{ fontSize: '0.84rem', lineHeight: '1.5', maxWidth: '300px', marginBottom: '16px' }}>
+              Engineering operations and continuous delivery telemetry. Purpose-built for agile software teams deploying multiple times daily.
             </p>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="action-icon-btn" style={{ width: '34px', height: '34px' }} aria-label="GitHub">
-                <GitHubIcon size={16} />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="action-icon-btn" style={{ width: '34px', height: '34px' }} aria-label="Twitter">
-                <TwitterIcon size={16} />
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="action-icon-btn" style={{ width: '34px', height: '34px' }} aria-label="LinkedIn">
-                <LinkedInIcon size={16} />
-              </a>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="chip chip-success" style={{ fontSize: '0.7rem' }}>
+                <CheckCircle2 size={11} />
+                <span>All 28 Edge Nodes Operational</span>
+              </span>
             </div>
           </div>
 
-          {/* Col 2: Product */}
+          {/* Col 2 */}
           <div>
-            <h4 style={{ fontSize: '0.95rem', marginBottom: '1.2rem', color: 'var(--text-primary)' }}>Product</h4>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-              <li><Link to="/dashboard" style={{ transition: 'color 0.2s' }}>Dashboard Suite</Link></li>
-              <li><Link to="/projects" style={{ transition: 'color 0.2s' }}>Kanban & Sprints</Link></li>
-              <li><Link to="/analytics" style={{ transition: 'color 0.2s' }}>Telemetry & Charts</Link></li>
-              <li><Link to="/team" style={{ transition: 'color 0.2s' }}>Collaboration Matrix</Link></li>
-              <li><Link to="/settings" style={{ transition: 'color 0.2s' }}>Integrations & API</Link></li>
+            <div className="label-caps" style={{ marginBottom: '12px' }}>Workspace</div>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.84rem' }}>
+              <li><Link to="/dashboard" className="nav-link">Sprint Dashboard</Link></li>
+              <li><Link to="/projects" className="nav-link">Kanban Issue Tracker</Link></li>
+              <li><Link to="/analytics" className="nav-link">P99 Latency Telemetry</Link></li>
+              <li><Link to="/team" className="nav-link">RBAC Access Control</Link></li>
             </ul>
           </div>
 
-          {/* Col 3: Resources */}
+          {/* Col 3 */}
           <div>
-            <h4 style={{ fontSize: '0.95rem', marginBottom: '1.2rem', color: 'var(--text-primary)' }}>Platform</h4>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-              <li><span style={{ cursor: 'pointer' }}>Documentation</span></li>
-              <li><span style={{ cursor: 'pointer' }}>Render Deployment</span></li>
-              <li><span style={{ cursor: 'pointer' }}>GitHub Actions CI/CD</span></li>
-              <li><span style={{ cursor: 'pointer' }}>Security Whitepaper</span></li>
-              <li><span style={{ cursor: 'pointer' }}>API Reference</span></li>
+            <div className="label-caps" style={{ marginBottom: '12px' }}>Deployment</div>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.84rem' }}>
+              <li><a href="https://render.com" target="_blank" rel="noopener noreferrer" className="nav-link">Render Blueprint Spec</a></li>
+              <li><a href="https://github.com" target="_blank" rel="noopener noreferrer" className="nav-link">GitHub Actions CI/CD</a></li>
+              <li><Link to="/settings" className="nav-link">API Token Rotation</Link></li>
+              <li><Link to="/login" className="nav-link">Demo Quick Login</Link></li>
             </ul>
           </div>
 
-          {/* Col 4: Status & Deploy */}
+          {/* Col 4 */}
           <div>
-            <h4 style={{ fontSize: '0.95rem', marginBottom: '1.2rem', color: 'var(--text-primary)' }}>Cloud Health</h4>
-            <div className="glass-card" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}>
-                <span className="status-dot online"></span>
-                <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>All Systems Nominal</span>
-              </div>
-              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                Render Edge CDN: 99.99% Uptime across 28 global regions.
-              </p>
+            <div className="label-caps" style={{ marginBottom: '12px' }}>System Info</div>
+            <div className="panel" style={{ padding: '12px', fontSize: '0.78rem', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ color: 'var(--text-muted)' }}>RUNNING BUILD:</div>
+              <div style={{ color: 'var(--text-primary)', marginTop: '2px' }}>v2.4.0-edge (rev 03f1e83)</div>
+              <div style={{ marginTop: '8px', color: 'var(--text-muted)' }}>HOST ENVIRONMENT:</div>
+              <div style={{ color: 'var(--accent)', marginTop: '2px' }}>Render Edge &amp; GitHub Pages</div>
             </div>
           </div>
         </div>
 
         <div className="footer-bottom">
           <div>
-            &copy; {new Date().getFullYear()} NexusFlow Inc. Built with modern React &amp; Vite.
+            &copy; {new Date().getFullYear()} NexusFlow Project. Standard MIT License.
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-secondary)' }}>
-            <span>Engineered with passion for high performance</span>
-            <Heart size={14} color="var(--accent-rose)" fill="var(--accent-rose)" />
+          <div style={{ display: 'flex', gap: '16px' }}>
+            <span>Target: SPA React 19 + Vite 8</span>
+            <span>Zero Runtime Dependencies Bloat</span>
           </div>
         </div>
       </div>

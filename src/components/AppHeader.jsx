@@ -10,8 +10,8 @@ import {
   User, 
   Settings, 
   LogOut, 
-  HelpCircle,
-  ShieldCheck
+  ShieldCheck,
+  Check
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
@@ -29,10 +29,9 @@ export default function AppHeader({ onToggleSidebar, onOpenNewTask }) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const [notifications, setNotifications] = useState([
-    { id: 1, type: 'deploy', title: 'Render static build v2.4.0 successfully deployed to edge', time: '5m ago', unread: true },
-    { id: 2, type: 'pr', title: 'Sarah Chen requested review on #418 - Auth Flow enhancement', time: '32m ago', unread: true },
-    { id: 3, type: 'security', title: 'Security policy audit passed with 100% compliance', time: '2h ago', unread: false },
-    { id: 4, type: 'general', title: 'Sprint velocity increased by +18.4% this week', time: '1d ago', unread: false },
+    { id: 1, type: 'deploy', title: 'Render static build v2.4.0 active on edge', time: '5m ago', unread: true },
+    { id: 2, type: 'pr', title: 'Sarah Chen merged #418: Auth flow verification', time: '32m ago', unread: true },
+    { id: 3, type: 'security', title: 'Zero-trust RBAC policy audit passed', time: '2h ago', unread: false },
   ]);
 
   const unreadCount = notifications.filter(n => n.unread).length;
@@ -54,7 +53,7 @@ export default function AppHeader({ onToggleSidebar, onOpenNewTask }) {
 
   const handleMarkAllRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
-    showToast('All notifications marked as read', 'info');
+    showToast('Activity stream marked as read', 'info');
   };
 
   const handleSearchSubmit = (e) => {
@@ -67,40 +66,38 @@ export default function AppHeader({ onToggleSidebar, onOpenNewTask }) {
   return (
     <header className="app-header">
       {/* Left: Mobile hamburger & search */}
-      <div style={{ display: 'flex', alignContent: 'center', alignItems: 'center', gap: '1rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <button
-          className="action-icon-btn"
+          className="action-icon-btn mobile-nav-toggle"
           onClick={onToggleSidebar}
           aria-label="Toggle navigation drawer"
-          style={{ display: window.innerWidth < 1024 ? 'flex' : 'none' }}
         >
-          <Menu size={19} />
+          <Menu size={16} />
         </button>
 
         <form onSubmit={handleSearchSubmit} className="header-search">
-          <Search size={16} color="var(--text-muted)" />
+          <Search size={14} color="var(--text-muted)" />
           <input
             type="text"
-            placeholder="Search projects, tasks, team (Press Enter)..."
+            placeholder="Search issues, branches, telemetry..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             id="app-global-search"
           />
+          <span className="kbd-shortcut">/</span>
         </form>
       </div>
 
-      {/* Right: Actions, Theme, Notifs, Profile */}
+      {/* Right: Actions */}
       <div className="header-actions">
-        {/* Quick Action Button */}
         {onOpenNewTask && (
           <button
             onClick={onOpenNewTask}
             className="btn btn-primary btn-sm"
             id="header-create-btn"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
           >
-            <Plus size={16} />
-            <span style={{ display: window.innerWidth < 640 ? 'none' : 'inline' }}>New Task</span>
+            <Plus size={14} />
+            <span style={{ display: window.innerWidth < 640 ? 'none' : 'inline' }}>New Issue</span>
           </button>
         )}
 
@@ -108,23 +105,23 @@ export default function AppHeader({ onToggleSidebar, onOpenNewTask }) {
         <button
           onClick={toggleTheme}
           className="action-icon-btn"
-          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
           id="header-theme-toggle"
           aria-label="Toggle theme"
         >
-          {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+          {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
         </button>
 
-        {/* Notification Bell */}
+        {/* Activity Bell */}
         <div style={{ position: 'relative' }} ref={notifRef}>
           <button
             onClick={() => setShowNotifications(!showNotifications)}
             className="action-icon-btn"
-            title="Notifications"
+            title="Activity Feed"
             id="header-notif-btn"
-            aria-label="View notifications"
+            aria-label="View activity"
           >
-            <Bell size={17} />
+            <Bell size={15} />
             {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
           </button>
 
@@ -137,52 +134,36 @@ export default function AppHeader({ onToggleSidebar, onOpenNewTask }) {
           )}
         </div>
 
-        {/* User Avatar Menu */}
+        {/* User Mini Avatar */}
         <div style={{ position: 'relative' }} ref={userMenuRef}>
           <div
             onClick={() => setShowUserMenu(!showUserMenu)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              cursor: 'pointer',
-              padding: '0.2rem 0.4rem',
-              borderRadius: 'var(--radius-md)',
-              transition: 'background 0.2s',
-            }}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
             id="header-user-avatar"
           >
-            <div className="avatar-img" style={{ width: '34px', height: '34px', fontSize: '0.8rem' }}>
+            <div className="avatar-img">
               {user?.avatar || 'NU'}
-            </div>
-            <div style={{ display: window.innerWidth < 768 ? 'none' : 'block', textAlign: 'left' }}>
-              <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.2 }}>
-                {user?.name || 'Nexus User'}
-              </div>
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                {user?.plan || 'Pro Tier'}
-              </div>
             </div>
           </div>
 
           {showUserMenu && (
             <div className="dropdown-menu">
-              <div style={{ padding: '0.5rem 0.75rem', borderBottom: '1px solid var(--border-color)', marginBottom: '0.3rem' }}>
-                <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{user?.name}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user?.email}</div>
+              <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-default)', marginBottom: '4px' }}>
+                <div style={{ fontWeight: 600, fontSize: '0.84rem', color: 'var(--text-primary)' }}>{user?.name}</div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{user?.email}</div>
               </div>
 
               <Link to="/settings" onClick={() => setShowUserMenu(false)} className="dropdown-item">
-                <User size={15} />
-                <span>My Profile</span>
+                <User size={14} />
+                <span>Profile Settings</span>
               </Link>
               <Link to="/team" onClick={() => setShowUserMenu(false)} className="dropdown-item">
-                <ShieldCheck size={15} />
+                <ShieldCheck size={14} />
                 <span>Team &amp; Access</span>
               </Link>
               <Link to="/settings" onClick={() => setShowUserMenu(false)} className="dropdown-item">
-                <Settings size={15} />
-                <span>Workspace Settings</span>
+                <Settings size={14} />
+                <span>API Keys &amp; Deploy</span>
               </Link>
 
               <div className="dropdown-divider" />
@@ -191,13 +172,13 @@ export default function AppHeader({ onToggleSidebar, onOpenNewTask }) {
                 onClick={() => {
                   setShowUserMenu(false);
                   logout();
-                  showToast('Logged out successfully', 'info');
+                  showToast('Signed out of workspace', 'info');
                   navigate('/login');
                 }}
                 className="dropdown-item"
-                style={{ color: 'var(--accent-rose)' }}
+                style={{ color: 'var(--status-danger)' }}
               >
-                <LogOut size={15} />
+                <LogOut size={14} />
                 <span>Sign Out</span>
               </button>
             </div>

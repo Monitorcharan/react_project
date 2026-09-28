@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Layers, Sun, Moon, ArrowRight, Menu, X, LayoutDashboard } from 'lucide-react';
+import { Terminal, Sun, Moon, ArrowRight, Menu, X, LayoutDashboard } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -13,19 +13,18 @@ export default function Navbar() {
   return (
     <header className="public-navbar">
       <div className="container nav-wrapper">
-        {/* Brand Logo */}
-        <Link to="/" className="brand-logo" id="nav-brand-logo">
-          <div className="brand-icon-box">
-            <Layers size={22} />
-          </div>
-          <span>Nexus<span style={{ color: 'var(--primary)' }}>Flow</span></span>
-        </Link>
+        {/* Brand */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Link to="/" className="brand-logo" id="nav-brand-logo">
+            <div className="brand-icon-box">
+              <Terminal size={15} />
+            </div>
+            <span>NexusFlow</span>
+          </Link>
+          <span className="chip" style={{ fontSize: '0.68rem', padding: '1px 6px' }}>v2.4-edge</span>
+        </div>
 
-        {/* Desktop Nav Links */}
-        <nav className="desktop-nav" style={{ display: 'none' }}>
-          {/* Will show via CSS on desktop */}
-        </nav>
-
+        {/* Navigation Links */}
         <ul className="nav-links" style={{ display: window.innerWidth < 768 ? 'none' : 'flex' }}>
           <li>
             <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>
@@ -33,54 +32,53 @@ export default function Navbar() {
             </Link>
           </li>
           <li>
-            <a href="#features" className="nav-link">Features</a>
+            <a href="#pipeline" className="nav-link">Pipeline Spec</a>
           </li>
           <li>
-            <a href="#solutions" className="nav-link">Solutions</a>
+            <a href="#benchmarks" className="nav-link">Benchmarks</a>
           </li>
           <li>
-            <a href="#pricing" className="nav-link">Pricing</a>
+            <a href="#deployment" className="nav-link">Deployment</a>
           </li>
         </ul>
 
-        {/* Nav Actions */}
+        {/* Actions */}
         <div className="nav-actions">
-          {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
             className="action-icon-btn"
-            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
             id="nav-theme-toggle"
             aria-label="Toggle theme"
           >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
           </button>
 
           {isAuthenticated ? (
             <Link to="/dashboard" className="btn btn-primary btn-sm" id="nav-dashboard-btn">
-              <LayoutDashboard size={16} />
+              <LayoutDashboard size={14} />
               <span>Workspace</span>
             </Link>
           ) : (
             <>
               <Link to="/login" className="btn btn-ghost btn-sm" id="nav-login-btn">
-                Log in
+                Sign in
               </Link>
               <Link to="/signup" className="btn btn-primary btn-sm" id="nav-signup-btn">
-                <span>Start Free</span>
-                <ArrowRight size={15} />
+                <span>Deploy Free</span>
+                <ArrowRight size={13} />
               </Link>
             </>
           )}
 
           {/* Mobile hamburger */}
           <button
-            className="action-icon-btn mobile-toggle"
+            className="action-icon-btn"
             onClick={() => setMobileOpen(!mobileOpen)}
             style={{ display: window.innerWidth < 768 ? 'flex' : 'none' }}
             aria-label="Toggle mobile menu"
           >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            {mobileOpen ? <X size={17} /> : <Menu size={17} />}
           </button>
         </div>
       </div>
@@ -88,49 +86,21 @@ export default function Navbar() {
       {/* Mobile Drawer */}
       {mobileOpen && (
         <div
-          className="glass-panel"
+          className="panel"
           style={{
-            margin: '0.75rem 1rem',
-            padding: '1.25rem',
+            margin: '8px 16px 0',
+            padding: '16px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '1rem',
+            gap: '12px',
           }}
         >
-          <Link
-            to="/"
-            onClick={() => setMobileOpen(false)}
-            className="nav-link"
-            style={{ padding: '0.5rem 0', borderBottom: '1px solid var(--border-color)' }}
-          >
-            Overview
-          </Link>
-          <Link
-            to="/dashboard"
-            onClick={() => setMobileOpen(false)}
-            className="nav-link"
-            style={{ padding: '0.5rem 0', borderBottom: '1px solid var(--border-color)' }}
-          >
-            Workspace Dashboard
-          </Link>
+          <Link to="/" onClick={() => setMobileOpen(false)} className="nav-link">Overview</Link>
+          <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="nav-link">Workspace</Link>
           {!isAuthenticated && (
-            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
-              <Link
-                to="/login"
-                onClick={() => setMobileOpen(false)}
-                className="btn btn-secondary btn-sm"
-                style={{ flex: 1 }}
-              >
-                Log In
-              </Link>
-              <Link
-                to="/signup"
-                onClick={() => setMobileOpen(false)}
-                className="btn btn-primary btn-sm"
-                style={{ flex: 1 }}
-              >
-                Sign Up
-              </Link>
+            <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+              <Link to="/login" onClick={() => setMobileOpen(false)} className="btn btn-secondary btn-sm" style={{ flex: 1 }}>Sign in</Link>
+              <Link to="/signup" onClick={() => setMobileOpen(false)} className="btn btn-primary btn-sm" style={{ flex: 1 }}>Deploy Free</Link>
             </div>
           )}
         </div>

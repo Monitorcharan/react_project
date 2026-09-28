@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  Layers, 
+  Terminal, 
   Mail, 
   Lock, 
   Eye, 
   EyeOff, 
   ArrowRight, 
-  Sparkles 
+  Key 
 } from 'lucide-react';
 import { GitHubIcon, GoogleIcon } from '../components/Icons';
-
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Navbar from '../components/Navbar';
@@ -37,9 +36,9 @@ export default function Login() {
     setTimeout(() => {
       login(email, password);
       setIsLoading(false);
-      showToast('Welcome back! Successfully logged into workspace', 'success');
+      showToast('Authenticated session active', 'success');
       navigate('/dashboard');
-    }, 600);
+    }, 400);
   };
 
   const handleDemoLogin = () => {
@@ -47,9 +46,9 @@ export default function Login() {
     setTimeout(() => {
       resetToDemoUser();
       setIsLoading(false);
-      showToast('Logged in as Alex Morgan (Demo Lead)', 'success');
+      showToast('Authenticated as Alex Morgan (Staff Product Engineer)', 'success');
       navigate('/dashboard');
-    }, 400);
+    }, 300);
   };
 
   return (
@@ -57,88 +56,76 @@ export default function Login() {
       <Navbar />
 
       <main className="auth-page">
-        {/* Ambient background glow */}
-        <div 
-          style={{
-            position: 'absolute',
-            width: '450px',
-            height: '450px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(6, 182, 212, 0.05) 50%, transparent 70%)',
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
-
-        <div className="auth-container" style={{ position: 'relative', zIndex: 1 }}>
+        <div className="auth-container">
           <div className="auth-header">
-            <div style={{ display: 'inline-flex', padding: '0.6rem', borderRadius: 'var(--radius-lg)', background: 'var(--primary-light)', color: '#818cf8', marginBottom: '1rem' }}>
-              <Layers size={28} />
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <div className="brand-icon-box" style={{ width: '24px', height: '24px' }}>
+                <Terminal size={14} />
+              </div>
+              <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>NexusFlow Auth</span>
             </div>
-            <h2>Sign in to NexusFlow</h2>
-            <p>Welcome back! Enter your credentials to access your team workspace.</p>
+            <h2>Sign In to Workspace</h2>
+            <p style={{ fontSize: '0.86rem' }}>Access your team sprint board and edge deployment monitors.</p>
           </div>
 
-          {/* Quick Demo Button */}
+          {/* Quick Demo Access */}
           <button
             onClick={handleDemoLogin}
             type="button"
             className="btn btn-secondary btn-sm"
             style={{
               width: '100%',
-              marginBottom: '1.25rem',
-              borderColor: 'rgba(99, 102, 241, 0.35)',
-              background: 'rgba(99, 102, 241, 0.1)',
-              color: '#a5b4fc',
+              marginBottom: '16px',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.8rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.5rem',
+              gap: '6px',
             }}
             id="login-demo-btn"
           >
-            <Sparkles size={16} />
-            <span>⚡ Instant One-Click Demo Login</span>
+            <Key size={14} />
+            <span>One-Click Demo Session (Staff Lead)</span>
           </button>
 
           {/* Social Logins */}
-          <div className="oauth-buttons">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
             <button
               type="button"
-              className="oauth-btn"
+              className="btn btn-secondary btn-sm"
               onClick={() => {
                 login('alex.github@nexusflow.io', 'password123');
-                showToast('Signed in via GitHub OAuth', 'success');
+                showToast('Authenticated via GitHub OAuth', 'success');
                 navigate('/dashboard');
               }}
             >
-              <GitHubIcon size={17} />
+              <GitHubIcon size={15} />
               <span>GitHub</span>
             </button>
             <button
               type="button"
-              className="oauth-btn"
+              className="btn btn-secondary btn-sm"
               onClick={() => {
                 login('alex.google@nexusflow.io', 'password123');
-                showToast('Signed in via Google OAuth', 'success');
+                showToast('Authenticated via Google OAuth', 'success');
                 navigate('/dashboard');
               }}
             >
-              <GoogleIcon size={17} />
+              <GoogleIcon size={15} />
               <span>Google</span>
             </button>
           </div>
 
           <div className="auth-divider">
-            <span>or continue with email</span>
+            <span>OR EMAIL CREDENTIALS</span>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label className="form-label" htmlFor="login-email">Work Email</label>
               <div className="input-with-icon">
-                <Mail size={17} className="input-icon" />
+                <Mail size={15} className="input-icon" />
                 <input
                   id="login-email"
                   type="email"
@@ -154,12 +141,12 @@ export default function Login() {
             <div className="form-group">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <label className="form-label" htmlFor="login-password">Password</label>
-                <a href="#forgot" onClick={(e) => { e.preventDefault(); showToast('Password reset link sent to demo email', 'info'); }} style={{ fontSize: '0.78rem', color: '#818cf8' }}>
-                  Forgot password?
+                <a href="#forgot" onClick={(e) => { e.preventDefault(); showToast('Reset instructions dispatched to email', 'info'); }} style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  Forgot?
                 </a>
               </div>
               <div className="input-with-icon">
-                <Lock size={17} className="input-icon" />
+                <Lock size={15} className="input-icon" />
                 <input
                   id="login-password"
                   type={showPassword ? 'text' : 'password'}
@@ -175,20 +162,20 @@ export default function Login() {
                   className="input-action"
                   aria-label="Toggle password visibility"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '1rem 0 1.5rem', fontSize: '0.85rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', color: 'var(--text-secondary)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '14px 0 20px', fontSize: '0.82rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: 'var(--text-secondary)' }}>
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  style={{ accentColor: 'var(--primary)' }}
+                  style={{ accentColor: 'var(--accent)' }}
                 />
-                <span>Remember for 30 days</span>
+                <span>Persist authentication token</span>
               </label>
             </div>
 
@@ -196,26 +183,26 @@ export default function Login() {
               type="submit"
               disabled={isLoading}
               className="btn btn-primary"
-              style={{ width: '100%', padding: '0.8rem' }}
+              style={{ width: '100%', padding: '9px' }}
               id="login-submit-btn"
             >
               {isLoading ? (
-                <span>Authenticating...</span>
+                <span>Validating Session...</span>
               ) : (
                 <>
-                  <span>Sign In to Workspace</span>
-                  <ArrowRight size={17} />
+                  <span>Sign In</span>
+                  <ArrowRight size={15} />
                 </>
               )}
             </button>
           </form>
 
-          <p style={{ marginTop: '1.75rem', fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-            Don't have an account?{' '}
-            <Link to="/signup" style={{ color: '#818cf8', fontWeight: 600 }}>
-              Create an account
+          <div style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid var(--border-subtle)', textAlign: 'center', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+            Need an organization workspace?{' '}
+            <Link to="/signup" style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
+              Deploy Account
             </Link>
-          </p>
+          </div>
         </div>
       </main>
     </div>

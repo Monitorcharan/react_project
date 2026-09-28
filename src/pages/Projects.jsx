@@ -2,32 +2,26 @@ import React, { useState } from 'react';
 import { 
   Plus, 
   Search, 
-  Filter, 
   Kanban, 
   List, 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle, 
-  MoreHorizontal, 
-  ArrowRight,
-  Flag,
   Calendar,
-  Layers
+  GitBranch,
+  Filter
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import TaskModal from '../components/TaskModal';
 
 export default function Projects() {
   const { showToast } = useToast();
-  const [viewMode, setViewMode] = useState('kanban'); // 'kanban' or 'list'
+  const [viewMode, setViewMode] = useState('kanban');
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
 
   const [tasks, setTasks] = useState([
     {
-      id: 'task-1',
-      title: 'Vite 6 & React 19 Upgrade with strict types',
+      id: 'NX-101',
+      title: 'Vite 6 & React 19 Core Framework Upgrade',
       category: 'Frontend',
       priority: 'Urgent',
       status: 'In Progress',
@@ -36,8 +30,8 @@ export default function Projects() {
       dueDate: 'Tomorrow',
     },
     {
-      id: 'task-2',
-      title: 'Integrate Render SPA rewrites and edge caching',
+      id: 'NX-102',
+      title: 'Render Static Edge CI/CD Action Pipeline',
       category: 'DevOps',
       priority: 'High',
       status: 'In Review',
@@ -46,19 +40,9 @@ export default function Projects() {
       dueDate: 'Oct 2',
     },
     {
-      id: 'task-3',
-      title: 'Design Dark Mode Glassmorphism Tokens',
-      category: 'Design',
-      priority: 'Medium',
-      status: 'Done',
-      assignee: 'Elena Rostova',
-      avatar: 'ER',
-      dueDate: 'Completed',
-    },
-    {
-      id: 'task-4',
-      title: 'Implement PKCE OAuth flow for Google & GitHub',
-      category: 'Backend',
+      id: 'NX-103',
+      title: 'Zero-Trust RBAC & JWT Session Rotation',
+      category: 'Security',
       priority: 'High',
       status: 'In Progress',
       assignee: 'Marcus Vance',
@@ -66,97 +50,101 @@ export default function Projects() {
       dueDate: 'Oct 5',
     },
     {
-      id: 'task-5',
-      title: 'Benchmark client-side bundle size under 150KB',
+      id: 'NX-104',
+      title: 'Deterministic SVG Performance Visualizers',
+      category: 'Analytics',
+      priority: 'Medium',
+      status: 'Done',
+      assignee: 'Elena Rostova',
+      avatar: 'ER',
+      dueDate: 'Closed',
+    },
+    {
+      id: 'NX-105',
+      title: 'High-Contrast 8px Grid Design Tokens',
+      category: 'Design',
+      priority: 'Medium',
+      status: 'Done',
+      assignee: 'Alex Morgan',
+      avatar: 'AM',
+      dueDate: 'Closed',
+    },
+    {
+      id: 'NX-106',
+      title: 'Verify Client-Side Bundle Budget Under 150KB',
       category: 'DevOps',
       priority: 'Low',
       status: 'Backlog',
       assignee: 'Alex Morgan',
       avatar: 'AM',
-      dueDate: 'Next Sprint',
-    },
-    {
-      id: 'task-6',
-      title: 'Automated GitHub Actions Pages workflow',
-      category: 'DevOps',
-      priority: 'High',
-      status: 'Done',
-      assignee: 'Sarah Chen',
-      avatar: 'SC',
-      dueDate: 'Completed',
+      dueDate: 'Sprint 43',
     },
   ]);
 
   const handleAddTask = (newTask) => {
     const formattedTask = {
       ...newTask,
+      id: 'NX-' + (tasks.length + 101),
       status: 'In Progress',
       avatar: newTask.assignee.split(' ').map(n => n[0]).join('').substring(0, 2),
     };
     setTasks(prev => [formattedTask, ...prev]);
-    showToast(`Task "${newTask.title}" added to sprint board`, 'success');
+    showToast(`Registered issue ${formattedTask.id}`, 'success');
   };
 
   const handleMoveStatus = (taskId, newStatus) => {
     setTasks(prev =>
       prev.map(t => (t.id === taskId ? { ...t, status: newStatus } : t))
     );
-    showToast(`Moved task to "${newStatus}"`, 'info');
+    showToast(`Issue ${taskId} &rarr; ${newStatus}`, 'info');
   };
 
   const filteredTasks = tasks.filter(t => {
     const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          t.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           t.assignee.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCat = categoryFilter === 'All' || t.category === categoryFilter;
     return matchesSearch && matchesCat;
   });
 
   const columns = [
-    { id: 'Backlog', title: 'Backlog', color: 'var(--text-muted)' },
-    { id: 'In Progress', title: 'In Progress', color: 'var(--primary)' },
-    { id: 'In Review', title: 'In Review', color: 'var(--accent-purple)' },
-    { id: 'Done', title: 'Completed', color: 'var(--accent-emerald)' },
+    { id: 'Backlog', title: 'BACKLOG' },
+    { id: 'In Progress', title: 'IN PROGRESS' },
+    { id: 'In Review', title: 'IN REVIEW' },
+    { id: 'Done', title: 'DONE' },
   ];
-
-  const getPriorityBadge = (p) => {
-    switch (p) {
-      case 'Urgent': return <span className="badge badge-danger">Urgent</span>;
-      case 'High': return <span className="badge badge-warning">High</span>;
-      case 'Medium': return <span className="badge badge-primary">Medium</span>;
-      default: return <span className="badge badge-info">Low</span>;
-    }
-  };
 
   return (
     <div>
-      {/* Header & Controls */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ fontSize: '1.9rem', marginBottom: '0.3rem' }}>
-            Sprint Projects &amp; Tasks
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
+            <span>WORKSPACE</span>
+            <span>/</span>
+            <span>ISSUES</span>
+          </div>
+          <h1 style={{ fontSize: '1.6rem', letterSpacing: '-0.02em' }}>
+            Sprint Issue Tracker
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
-            Organize team deliverables with interactive boards and status workflows.
-          </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          {/* View Toggle */}
-          <div style={{ display: 'flex', background: 'var(--bg-secondary)', padding: '0.2rem', borderRadius: 'var(--radius-md)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', background: 'var(--bg-canvas)', border: '1px solid var(--border-default)', padding: '2px', borderRadius: 'var(--radius-sm)' }}>
             <button
               onClick={() => setViewMode('kanban')}
-              className={`btn-sm ${viewMode === 'kanban' ? 'btn-primary' : 'btn-ghost'}`}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+              className={`btn-sm ${viewMode === 'kanban' ? 'btn-secondary' : 'btn-ghost'}`}
+              style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', padding: '3px 8px' }}
             >
-              <Kanban size={15} />
+              <Kanban size={13} />
               <span>Board</span>
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`btn-sm ${viewMode === 'list' ? 'btn-primary' : 'btn-ghost'}`}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+              className={`btn-sm ${viewMode === 'list' ? 'btn-secondary' : 'btn-ghost'}`}
+              style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', padding: '3px 8px' }}
             >
-              <List size={15} />
+              <List size={13} />
               <span>List</span>
             </button>
           </div>
@@ -166,36 +154,34 @@ export default function Projects() {
             className="btn btn-primary btn-sm"
             id="projects-create-task-btn"
           >
-            <Plus size={16} />
-            <span>New Task</span>
+            <Plus size={14} />
+            <span>Create Issue</span>
           </button>
         </div>
       </div>
 
       {/* Filter Bar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, minWidth: '260px', maxWidth: '400px' }}>
-          <div className="input-with-icon" style={{ width: '100%' }}>
-            <Search size={15} className="input-icon" />
-            <input
-              type="text"
-              placeholder="Search tasks..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="form-input"
-              style={{ padding: '0.55rem 0.75rem 0.55rem 2.4rem', fontSize: '0.88rem' }}
-            />
-          </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '12px' }}>
+        <div className="input-with-icon" style={{ minWidth: '260px', maxWidth: '360px', flex: 1 }}>
+          <Search size={14} className="input-icon" />
+          <input
+            type="text"
+            placeholder="Search by key, title or assignee..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="form-input"
+            style={{ paddingLeft: '32px', fontSize: '0.82rem', paddingBlock: '6px' }}
+          />
         </div>
 
         {/* Category Pills */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', overflowX: 'auto', paddingBottom: '4px' }}>
-          {['All', 'Frontend', 'Backend', 'DevOps', 'Design'].map((cat) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {['All', 'Frontend', 'Backend', 'DevOps', 'Security', 'Design'].map((cat) => (
             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
-              className={`btn-sm ${categoryFilter === cat ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ fontSize: '0.8rem', padding: '0.35rem 0.8rem' }}
+              className={`btn-sm ${categoryFilter === cat ? 'btn-secondary' : 'btn-ghost'}`}
+              style={{ fontSize: '0.75rem', padding: '3px 8px', borderRadius: 'var(--radius-xs)' }}
             >
               {cat}
             </button>
@@ -203,91 +189,94 @@ export default function Projects() {
         </div>
       </div>
 
-      {/* Kanban Board View */}
+      {/* Kanban Board */}
       {viewMode === 'kanban' ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem', alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '14px', alignItems: 'start' }}>
           {columns.map((col) => {
             const colTasks = filteredTasks.filter(t => t.status === col.id);
             return (
               <div
                 key={col.id}
+                className="panel"
                 style={{
-                  background: 'var(--bg-secondary)',
-                  borderRadius: 'var(--radius-lg)',
-                  border: '1px solid var(--border-color)',
-                  padding: '1.1rem',
-                  minHeight: '400px',
+                  padding: '12px',
+                  minHeight: '440px',
                   display: 'flex',
                   flexDirection: 'column',
+                  background: 'var(--bg-subtle)',
                 }}
               >
                 {/* Column Header */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: col.color }} />
-                    <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{col.title}</span>
-                    <span style={{ fontSize: '0.75rem', background: 'var(--bg-tertiary)', padding: '0.1rem 0.45rem', borderRadius: 'var(--radius-full)', color: 'var(--text-secondary)' }}>
-                      {colTasks.length}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '10px', borderBottom: '1px solid var(--border-default)', marginBottom: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                      {col.title}
+                    </span>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                      ({colTasks.length})
                     </span>
                   </div>
                   <button
                     onClick={() => setIsTaskModalOpen(true)}
                     style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
-                    title="Add task to this column"
+                    title="Add issue"
                   >
-                    <Plus size={15} />
+                    <Plus size={14} />
                   </button>
                 </div>
 
-                {/* Task Cards Container */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', flex: 1 }}>
+                {/* Cards */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
                   {colTasks.map((t) => (
                     <div
                       key={t.id}
-                      className="glass-card"
+                      className="panel"
                       style={{
-                        padding: '1rem',
-                        cursor: 'default',
+                        padding: '12px',
+                        background: 'var(--bg-surface)',
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: '0.65rem',
+                        gap: '8px',
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--text-muted)' }}>
-                          {t.category}
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                          {t.id}
                         </span>
-                        {getPriorityBadge(t.priority)}
+                        <span className={`chip ${
+                          t.priority === 'Urgent' ? 'chip-danger' : t.priority === 'High' ? 'chip-warning' : 'chip-accent'
+                        }`} style={{ fontSize: '0.68rem', padding: '0px 5px' }}>
+                          {t.priority}
+                        </span>
                       </div>
 
-                      <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.35 }}>
+                      <div style={{ fontSize: '0.86rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.35 }}>
                         {t.title}
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '0.4rem', borderTop: '1px solid var(--border-subtle)', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                          <Calendar size={13} />
-                          <span>{t.dueDate}</span>
-                        </div>
-                        <div className="avatar-img" style={{ width: '24px', height: '24px', fontSize: '0.68rem' }} title={`Assigned to ${t.assignee}`}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.74rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', paddingTop: '6px', borderTop: '1px solid var(--border-subtle)' }}>
+                        <span>{t.dueDate}</span>
+                        <div className="avatar-img" style={{ width: '22px', height: '22px', fontSize: '0.64rem' }}>
                           {t.avatar}
                         </div>
                       </div>
 
-                      {/* Status Transition Quick Selector */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.2rem' }}>
-                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Move to:</span>
+                      {/* State transition selector */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>STATE:</span>
                         <select
                           value={t.status}
                           onChange={(e) => handleMoveStatus(t.id, e.target.value)}
                           style={{
-                            background: 'var(--bg-primary)',
-                            border: '1px solid var(--border-color)',
+                            background: 'var(--bg-subtle)',
+                            border: '1px solid var(--border-default)',
                             color: 'var(--text-secondary)',
                             fontSize: '0.72rem',
-                            borderRadius: '4px',
+                            fontFamily: 'var(--font-mono)',
+                            borderRadius: 'var(--radius-xs)',
                             padding: '2px 4px',
                             outline: 'none',
+                            flex: 1,
                           }}
                         >
                           <option value="Backlog">Backlog</option>
@@ -300,8 +289,8 @@ export default function Projects() {
                   ))}
 
                   {colTasks.length === 0 && (
-                    <div style={{ textAlign: 'center', padding: '2rem 1rem', color: 'var(--text-muted)', fontSize: '0.8rem', border: '1px dashed var(--border-color)', borderRadius: 'var(--radius-md)' }}>
-                      No tasks in this lane
+                    <div style={{ textAlign: 'center', padding: '24px 8px', color: 'var(--text-muted)', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
+                      EMPTY LANE
                     </div>
                   )}
                 </div>
@@ -311,62 +300,66 @@ export default function Projects() {
         </div>
       ) : (
         /* List View */
-        <div className="glass-card" style={{ padding: '1rem' }}>
-          <div className="table-container">
-            <table className="custom-table">
-              <thead>
-                <tr>
-                  <th>Task Title</th>
-                  <th>Category</th>
-                  <th>Priority</th>
-                  <th>Due Date</th>
-                  <th>Assignee</th>
-                  <th>Status</th>
+        <div className="table-wrap">
+          <table className="dense-table">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Assignee</th>
+                <th>Due</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredTasks.map((t) => (
+                <tr key={t.id}>
+                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.76rem', color: 'var(--text-muted)' }}>{t.id}</td>
+                  <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{t.title}</td>
+                  <td><span className="chip">{t.category}</span></td>
+                  <td>
+                    <span className={`chip ${
+                      t.priority === 'Urgent' ? 'chip-danger' : t.priority === 'High' ? 'chip-warning' : 'chip-accent'
+                    }`}>
+                      {t.priority}
+                    </span>
+                  </td>
+                  <td>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div className="avatar-img" style={{ width: '20px', height: '20px', fontSize: '0.62rem' }}>{t.avatar}</div>
+                      <span style={{ fontSize: '0.82rem' }}>{t.assignee}</span>
+                    </div>
+                  </td>
+                  <td style={{ fontSize: '0.78rem', fontFamily: 'var(--font-mono)' }}>{t.dueDate}</td>
+                  <td>
+                    <select
+                      value={t.status}
+                      onChange={(e) => handleMoveStatus(t.id, e.target.value)}
+                      style={{
+                        background: 'var(--bg-subtle)',
+                        border: '1px solid var(--border-default)',
+                        color: 'var(--text-primary)',
+                        padding: '3px 6px',
+                        borderRadius: 'var(--radius-xs)',
+                        fontSize: '0.78rem',
+                        fontFamily: 'var(--font-mono)',
+                      }}
+                    >
+                      <option value="Backlog">Backlog</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="In Review">In Review</option>
+                      <option value="Done">Done</option>
+                    </select>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {filteredTasks.map((t) => (
-                  <tr key={t.id}>
-                    <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{t.title}</td>
-                    <td><span className="badge badge-info">{t.category}</span></td>
-                    <td>{getPriorityBadge(t.priority)}</td>
-                    <td style={{ fontSize: '0.82rem' }}>{t.dueDate}</td>
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <div className="avatar-img" style={{ width: '24px', height: '24px', fontSize: '0.65rem' }}>
-                          {t.avatar}
-                        </div>
-                        <span style={{ fontSize: '0.85rem' }}>{t.assignee}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <select
-                        value={t.status}
-                        onChange={(e) => handleMoveStatus(t.id, e.target.value)}
-                        style={{
-                          background: 'var(--bg-secondary)',
-                          border: '1px solid var(--border-color)',
-                          color: 'var(--text-primary)',
-                          padding: '4px 8px',
-                          borderRadius: 'var(--radius-sm)',
-                          fontSize: '0.8rem',
-                        }}
-                      >
-                        <option value="Backlog">Backlog</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="In Review">In Review</option>
-                        <option value="Done">Done</option>
-                      </select>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
-      {/* Task Creation Modal */}
       <TaskModal
         isOpen={isTaskModalOpen}
         onClose={() => setIsTaskModalOpen(false)}
